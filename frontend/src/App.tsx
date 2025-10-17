@@ -16,15 +16,20 @@ import ProfilesPage from './pages/ProfilesPage'
 
 function App() {
   const { token } = useAuthStore()
+  
+  // DEBUG: Zeige Token-Status
+  console.log('App.tsx - Token:', token ? 'EXISTS' : 'NULL')
+  console.log('App.tsx - Full state:', useAuthStore.getState())
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={!token ? <LoginPage /> : <Navigate to="/" />} />
-        <Route path="/register" element={!token ? <RegisterPage /> : <Navigate to="/" />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/oauth2/callback" element={<OAuth2CallbackPage />} />
         
-        <Route path="/" element={token ? <DashboardLayout /> : <Navigate to="/login" />}>
+        {/* TEMPORÄR: Auth-Check deaktiviert - JEDER kann zugreifen */}
+        <Route path="/" element={<DashboardLayout />}>
           <Route index element={<Navigate to="/private" replace />} />
           <Route path="profiles" element={<ProfilesPage />} />
           
