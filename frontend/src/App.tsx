@@ -15,6 +15,22 @@ import SchoolDashboard from './pages/school/Dashboard'
 import ProfilesPage from './pages/ProfilesPage'
 import SettingsPage from './pages/SettingsPage'
 import NotesPage from './components/NotesPage'
+import GoalsPage from './pages/private/GoalsPage'
+import JournalPage from './pages/private/JournalPage'
+import ShoppingPage from './pages/private/ShoppingPage'
+import HealthPage from './pages/private/HealthPage'
+import TravelPage from './pages/private/TravelPage'
+import MoviesPage from './pages/private/MoviesPage'
+import MusicPage from './pages/private/MusicPage'
+import PhotosPage from './pages/private/PhotosPage'
+import QuickNotesPage from './pages/private/QuickNotesPage'
+import TimeTrackingPage from './pages/private/TimeTrackingPage'
+import StatisticsPage from './pages/private/StatisticsPage'
+import NewsPage from './pages/private/NewsPage'
+import ProjectsPage from './pages/work/ProjectsPage'
+import GradesPage from './pages/school/GradesPage'
+import HabitsPage from './pages/private/HabitsPage'
+import BudgetPage from './pages/private/BudgetPage'
 
 function App() {
   const { token } = useAuthStore()
@@ -44,18 +60,35 @@ function App() {
           <Route path="private/weight" element={<WeightPage />} />
           <Route path="private/meals" element={<MealsPage />} />
           <Route path="private/notes" element={<NotesPage category="privat" />} />
+          <Route path="private/habits" element={<HabitsPage />} />
+          <Route path="private/budget" element={<BudgetPage />} />
+          <Route path="private/goals" element={<GoalsPage />} />
+          <Route path="private/journal" element={<JournalPage />} />
+          <Route path="private/shopping" element={<ShoppingPage />} />
+          <Route path="private/health" element={<HealthPage />} />
+          <Route path="private/travel" element={<TravelPage />} />
+          <Route path="private/movies" element={<MoviesPage />} />
+          <Route path="private/music" element={<MusicPage />} />
+          <Route path="private/photos" element={<PhotosPage />} />
+          <Route path="private/quick-notes" element={<QuickNotesPage />} />
+          <Route path="private/time-tracking" element={<TimeTrackingPage />} />
+          <Route path="private/statistics" element={<StatisticsPage />} />
+          <Route path="private/news" element={<NewsPage />} />
           
           {/* Work Area */}
           <Route path="work" element={<WorkDashboard />} />
           <Route path="work/todos" element={<TodosPage />} />
           <Route path="work/calendar" element={<CalendarPage />} />
           <Route path="work/notes" element={<NotesPage category="arbeit" />} />
+          <Route path="work/time-tracking" element={<TimeTrackingPage />} />
+          <Route path="work/projects" element={<ProjectsPage />} />
           
           {/* School Area */}
           <Route path="school" element={<SchoolDashboard />} />
           <Route path="school/todos" element={<TodosPage />} />
           <Route path="school/calendar" element={<CalendarPage />} />
           <Route path="school/notes" element={<NotesPage category="schule" />} />
+          <Route path="school/grades" element={<GradesPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
