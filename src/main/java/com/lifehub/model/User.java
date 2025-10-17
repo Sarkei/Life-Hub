@@ -12,8 +12,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -50,10 +48,6 @@ public class User {
     @Builder.Default
     @Column(nullable = false)
     private Boolean enabled = true;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private Set<Profile> profiles = new HashSet<>();
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
