@@ -44,6 +44,9 @@ public class User {
     @Column
     private String providerId; // Google User ID
 
+    @Column(name = "phone_number")
+    private String phoneNumber; // Format: +49 151 12345678
+
     @Builder.Default
     @Column(nullable = false)
     private Boolean enabled = true;

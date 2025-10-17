@@ -1,7 +1,55 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
-import { User, Lock, Bell, Palette, Globe, Shield, Trash2, Save } from 'lucide-react'
+import { User, Lock, Bell, Palette, Globe, Shield, Trash2, Save, Phone } from 'lucide-react'
+import axios from 'axios'
+
+interface CountryCode {
+  country: string;
+  code: string;
+  flag: string;
+}
+
+interface MobilePrefix {
+  prefix: string;
+  provider: string;
+}
+
+const countryCodes: CountryCode[] = [
+  { country: 'Deutschland', code: '+49', flag: '🇩🇪' },
+  { country: 'Österreich', code: '+43', flag: '🇦🇹' },
+  { country: 'Schweiz', code: '+41', flag: '🇨🇭' },
+  { country: 'USA', code: '+1', flag: '🇺🇸' },
+  { country: 'Großbritannien', code: '+44', flag: '🇬🇧' },
+  { country: 'Frankreich', code: '+33', flag: '🇫🇷' },
+  { country: 'Spanien', code: '+34', flag: '🇪🇸' },
+  { country: 'Italien', code: '+39', flag: '🇮🇹' },
+  { country: 'Niederlande', code: '+31', flag: '🇳🇱' },
+  { country: 'Belgien', code: '+32', flag: '🇧🇪' },
+  { country: 'Polen', code: '+48', flag: '🇵🇱' },
+  { country: 'Türkei', code: '+90', flag: '🇹🇷' },
+];
+
+const germanMobilePrefixes: MobilePrefix[] = [
+  { prefix: '151', provider: 'Telekom' },
+  { prefix: '152', provider: 'Vodafone' },
+  { prefix: '155', provider: 'Telefónica' },
+  { prefix: '157', provider: 'Telefónica' },
+  { prefix: '159', provider: 'Telefónica' },
+  { prefix: '160', provider: 'Telekom' },
+  { prefix: '162', provider: 'Vodafone' },
+  { prefix: '163', provider: 'Telefónica' },
+  { prefix: '170', provider: 'Telekom' },
+  { prefix: '171', provider: 'Telekom' },
+  { prefix: '172', provider: 'Vodafone' },
+  { prefix: '173', provider: 'Vodafone' },
+  { prefix: '174', provider: 'Vodafone' },
+  { prefix: '175', provider: 'Telekom' },
+  { prefix: '176', provider: 'Telefónica' },
+  { prefix: '177', provider: 'Telefónica' },
+  { prefix: '178', provider: 'Telefónica' },
+  { prefix: '179', provider: 'Telefónica' },
+];
 
 export default function SettingsPage() {
   const navigate = useNavigate()
@@ -10,12 +58,14 @@ export default function SettingsPage() {
   const [settings, setSettings] = useState({
     displayName: username || '',
     email: email || '',
+    countryCode: '+49',
+    mobilePrefix: '151',
+    phoneNumber: '',
     language: 'de',
     theme: 'dark',
     notifications: {
-      email: true,
-      push: true,
-      reminders: true
+      email: false,
+      push: false
     },
     privacy: {
       profileVisibility: 'private',
@@ -24,16 +74,89 @@ export default function SettingsPage() {
     }
   })
 
+  // Lade User-Daten beim Mount
+  useEffect(() => {
+    if (userId) {
+      loadUserSettings();
+    }
+  }, [userId])
+
+  const loadUserSettings = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/users/${userId}`)
+      const userData = response.data
+      
+      setSettings(prev => ({
+        ...prev,
+        displayName: userData.username || '',
+        email: userData.email || '',
+        phoneNumber: userData.phoneNumber || ''
+      }))
+
+      // Parse Telefonnummer wenn vorhanden
+      if (userData.phoneNumber) {
+        parsePhoneNumber(userData.phoneNumber)
+      }
+    } catch (error) {
+      console.error('Fehler beim Laden der Benutzerdaten:', error)
+    }
+  }
+
+  const parsePhoneNumber = (fullNumber: string) => {
+    // Beispiel: +49 151 12345678
+    const parts = fullNumber.split(' ')
+    if (parts.length >= 3) {
+      setSettings(prev => ({
+        ...prev,
+        countryCode: parts[0],
+        mobilePrefix: parts[1],
+        phoneNumber: parts.slice(2).join('')
+      }))
+    }
+  }
+
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   })
 
-  const handleSaveSettings = () => {
-    console.log('Einstellungen gespeichert:', settings)
-    // TODO: API call to save settings
-    alert('Einstellungen erfolgreich gespeichert!')
+  const handleSaveSettings = async () => {
+    if (!userId) return;
+
+    try {
+      // Baue vollständige Telefonnummer zusammen
+      let fullPhoneNumber = '';
+      if (settings.phoneNumber) {
+        if (settings.countryCode === '+49') {
+          fullPhoneNumber = `${settings.countryCode} ${settings.mobilePrefix} ${settings.phoneNumber}`;
+        } else {
+          fullPhoneNumber = `${settings.countryCode} ${settings.phoneNumber}`;
+        }
+      }
+
+      const updates = {
+        username: settings.displayName,
+        email: settings.email,
+        phoneNumber: fullPhoneNumber
+      };
+
+      await axios.put(`http://localhost:8080/api/users/${userId}`, updates);
+      alert('Einstellungen erfolgreich gespeichert!');
+      
+      // Aktualisiere authStore mit neuem Username
+      useAuthStore.setState({
+        username: settings.displayName,
+        email: settings.email
+      });
+    } catch (error: any) {
+      console.error('Fehler beim Speichern:', error);
+      if (error.response?.data) {
+        alert(`Fehler: ${error.response.data}`);
+      } else {
+        alert('Fehler beim Speichern der Einstellungen');
+      }
+    }
   }
 
   const handleChangePassword = () => {
@@ -104,6 +227,59 @@ export default function SettingsPage() {
               disabled
               className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 text-gray-500 cursor-not-allowed"
             />
+          </div>
+
+          {/* Telefonnummer */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Mobilnummer (optional)</label>
+            <div className="flex gap-2">
+              {/* Ländervorwahl */}
+              <select
+                value={settings.countryCode}
+                onChange={(e) => setSettings({...settings, countryCode: e.target.value})}
+                className="w-32 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary-500"
+              >
+                {countryCodes.map(country => (
+                  <option key={country.code} value={country.code}>
+                    {country.flag} {country.code}
+                  </option>
+                ))}
+              </select>
+
+              {/* Mobilvorwahl (nur für Deutschland) */}
+              {settings.countryCode === '+49' && (
+                <select
+                  value={settings.mobilePrefix}
+                  onChange={(e) => setSettings({...settings, mobilePrefix: e.target.value})}
+                  className="w-32 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary-500"
+                >
+                  {germanMobilePrefixes.map(prefix => (
+                    <option key={prefix.prefix} value={prefix.prefix}>
+                      {prefix.prefix} ({prefix.provider})
+                    </option>
+                  ))}
+                </select>
+              )}
+
+              {/* Rufnummer */}
+              <input
+                type="text"
+                value={settings.phoneNumber}
+                onChange={(e) => {
+                  // Nur Zahlen erlauben
+                  const value = e.target.value.replace(/\D/g, '');
+                  setSettings({...settings, phoneNumber: value});
+                }}
+                placeholder={settings.countryCode === '+49' ? '12345678' : 'Rufnummer'}
+                maxLength={settings.countryCode === '+49' ? 8 : 15}
+                className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              {settings.countryCode === '+49' && settings.mobilePrefix && settings.phoneNumber
+                ? `Vollständige Nummer: ${settings.countryCode} ${settings.mobilePrefix} ${settings.phoneNumber}`
+                : 'Für SMS-Benachrichtigungen (Feature kommt später)'}
+            </p>
           </div>
         </div>
       </div>
@@ -184,19 +360,6 @@ export default function SettingsPage() {
               onChange={(e) => setSettings({
                 ...settings,
                 notifications: {...settings.notifications, push: e.target.checked}
-              })}
-              className="w-5 h-5 text-primary-600 rounded focus:ring-2 focus:ring-primary-500"
-            />
-          </label>
-
-          <label className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-            <span>Erinnerungen</span>
-            <input
-              type="checkbox"
-              checked={settings.notifications.reminders}
-              onChange={(e) => setSettings({
-                ...settings,
-                notifications: {...settings.notifications, reminders: e.target.checked}
               })}
               className="w-5 h-5 text-primary-600 rounded focus:ring-2 focus:ring-primary-500"
             />

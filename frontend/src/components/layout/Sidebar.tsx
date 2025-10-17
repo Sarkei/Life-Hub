@@ -438,7 +438,11 @@ export default function Sidebar() {
       <aside className={`fixed left-0 top-0 h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'} overflow-y-auto z-40`}>
         {/* Header */}
         <div className={`h-16 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between px-4'} border-b border-gray-200 dark:border-gray-700`}>
-          {!isCollapsed && <h1 className="text-xl font-bold">Life Hub</h1>}
+          {!isCollapsed && (
+            <NavLink to="/dashboard" className="text-xl font-bold hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              Life Hub
+            </NavLink>
+          )}
           <div className="flex gap-2">
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
