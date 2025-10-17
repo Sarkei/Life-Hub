@@ -4,7 +4,7 @@ services:
     container_name: lifehub-pgadmin
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@lifehub.local
+      PGADMIN_DEFAULT_EMAIL: admin@lifehub.de
       PGADMIN_DEFAULT_PASSWORD: lifehubadmin
     ports:
       - "5222:80"
