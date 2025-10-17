@@ -3,11 +3,17 @@ import { profileApi } from '../api'
 import { useProfileStore } from '../store/profileStore'
 import { useState, useEffect } from 'react'
 
-interface Profile {
+interface ApiProfile {
   id: number
   name: string
   color: string
   avatarUrl?: string
+  settings?: {
+    darkMode: boolean
+    language: string
+    timezone: string
+    notifications: boolean
+  }
 }
 
 export default function ProfilesPage() {
@@ -16,15 +22,25 @@ export default function ProfilesPage() {
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [newProfile, setNewProfile] = useState({ name: '', color: '#6366f1' })
 
-  const { data: profiles = [] } = useQuery<Profile[]>({
+  const { data: profiles = [] } = useQuery<ApiProfile[]>({
     queryKey: ['profiles'],
     queryFn: profileApi.getProfiles,
   })
 
   // React Query 5.x: onSuccess wurde entfernt, verwende useEffect stattdessen
   useEffect(() => {
-    if (profiles) {
-      setProfiles(profiles)
+    if (profiles && profiles.length > 0) {
+      // Konvertiere API-Profile zu Store-Profile (mit Default-Settings)
+      const storeProfiles = profiles.map(p => ({
+        ...p,
+        settings: p.settings || {
+          darkMode: true,
+          language: 'de',
+          timezone: 'Europe/Berlin',
+          notifications: true
+        }
+      }))
+      setProfiles(storeProfiles)
     }
   }, [profiles, setProfiles])
 
@@ -100,21 +116,32 @@ export default function ProfilesPage() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {profiles.map((profile) => (
-          <div
-            key={profile.id}
-            className={`card cursor-pointer transition-all hover:scale-105 ${
-              currentProfile?.id === profile.id ? 'ring-2 ring-primary-500' : ''
-            }`}
-            onClick={() => setCurrentProfile(profile)}
-            style={{ borderLeftColor: profile.color, borderLeftWidth: '4px' }}
-          >
-            <h3 className="text-xl font-semibold mb-2">{profile.name}</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {currentProfile?.id === profile.id && '✓ Aktives Profil'}
-            </p>
-          </div>
-        ))}
+        {profiles.map((profile) => {
+          const storeProfile = {
+            ...profile,
+            settings: profile.settings || {
+              darkMode: true,
+              language: 'de',
+              timezone: 'Europe/Berlin',
+              notifications: true
+            }
+          }
+          return (
+            <div
+              key={profile.id}
+              className={`card cursor-pointer transition-all hover:scale-105 ${
+                currentProfile?.id === profile.id ? 'ring-2 ring-primary-500' : ''
+              }`}
+              onClick={() => setCurrentProfile(storeProfile)}
+              style={{ borderLeftColor: profile.color, borderLeftWidth: '4px' }}
+            >
+              <h3 className="text-xl font-semibold mb-2">{profile.name}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {currentProfile?.id === profile.id && '✓ Aktives Profil'}
+              </p>
+            </div>
+          )
+        })}
       </div>
 
       {profiles.length === 0 && (
