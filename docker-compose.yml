@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: lifehub-db
+    environment:
+      POSTGRES_DB: lifehub
+      POSTGRES_USER: lifehub
+      POSTGRES_PASSWORD: lifehub
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - lifehub-network
+
+  backend:
+    build: .
+    container_name: lifehub-backend
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/lifehub
+      DATABASE_USERNAME: lifehub
+      DATABASE_PASSWORD: lifehub
+      JWT_SECRET: your-super-secret-jwt-key-change-this-in-production-make-it-long-and-secure-at-least-256-bits
+      SERVER_PORT: 5000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    networks:
+      - lifehub-network
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: lifehub-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - lifehub-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  lifehub-network:
+    driver: bridge

@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: life-hub
+  
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/lifehub}
+    username: ${DATABASE_USERNAME:lifehub}
+    password: ${DATABASE_PASSWORD:lifehub}
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  
+  security:
+    jwt:
+      secret: ${JWT_SECRET:your-secret-key-change-this-in-production-make-it-long-and-secure}
+      expiration: 86400000 # 24 hours
+
+server:
+  port: ${SERVER_PORT:5000}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    com.lifehub: INFO
+    org.springframework.security: DEBUG
