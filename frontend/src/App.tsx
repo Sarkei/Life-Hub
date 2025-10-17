@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthStore } from './store/authStore'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import { OAuth2CallbackPage } from './pages/OAuth2CallbackPage'
 import DashboardLayout from './components/layout/DashboardLayout'
 import PrivateDashboard from './pages/private/Dashboard'
 import TodosPage from './pages/private/TodosPage'
@@ -21,6 +22,7 @@ function App() {
       <Routes>
         <Route path="/login" element={!token ? <LoginPage /> : <Navigate to="/" />} />
         <Route path="/register" element={!token ? <RegisterPage /> : <Navigate to="/" />} />
+        <Route path="/oauth2/callback" element={<OAuth2CallbackPage />} />
         
         <Route path="/" element={token ? <DashboardLayout /> : <Navigate to="/login" />}>
           <Route index element={<Navigate to="/private" replace />} />

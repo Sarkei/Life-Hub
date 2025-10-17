@@ -43,8 +43,38 @@ export default function LoginPage() {
   }
 
   const handleGoogleLogin = () => {
-    // Redirect zu Google OAuth2
-    window.location.href = '/api/auth/oauth2/authorize/google'
+    const width = 500
+    const height = 600
+    const left = window.screen.width / 2 - width / 2
+    const top = window.screen.height / 2 - height / 2
+    
+    const popup = window.open(
+      '/oauth2/authorization/google',
+      'Google Login',
+      `width=${width},height=${height},left=${left},top=${top}`
+    )
+
+    // Listen for message from popup
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return
+      
+      if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
+        const { token, userId, username, email } = event.data
+        setAuth(token, userId, username, email)
+        navigate('/')
+        popup?.close()
+      }
+    }
+
+    window.addEventListener('message', handleMessage)
+    
+    // Cleanup
+    const checkPopup = setInterval(() => {
+      if (popup?.closed) {
+        clearInterval(checkPopup)
+        window.removeEventListener('message', handleMessage)
+      }
+    }, 1000)
   }
 
   return (

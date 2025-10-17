@@ -18,9 +18,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         var user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         
+        // Für OAuth2-User ohne Passwort: leeres Passwort setzen
+        String password = user.getPassword() != null ? user.getPassword() : "";
+        
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
-                .password(user.getPassword())
+                .password(password)
                 .authorities("USER")
                 .accountExpired(false)
                 .accountLocked(false)

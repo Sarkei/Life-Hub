@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/actuator/health", "/oauth2/**", "/login/oauth2/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/oauth2/**", "/actuator/health", "/oauth2/**", "/login/oauth2/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -47,10 +47,10 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(auth -> auth
-                                .baseUri("/api/auth/oauth2/authorize"))
+                                .baseUri("/oauth2/authorize"))
                         .redirectionEndpoint(redirect -> redirect
-                                .baseUri("/api/auth/oauth2/callback/*"))
-                        .successHandler(oAuth2SuccessHandler)
+                                .baseUri("/login/oauth2/code/*"))
+                        .defaultSuccessUrl("/api/oauth2/google/callback", true)
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
