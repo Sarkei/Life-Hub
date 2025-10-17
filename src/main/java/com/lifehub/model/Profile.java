@@ -29,6 +29,7 @@ public class Profile {
 
     private String avatarUrl;
 
+    @Builder.Default
     @Column(nullable = false)
     private String color = "#6366f1"; // Default color
 

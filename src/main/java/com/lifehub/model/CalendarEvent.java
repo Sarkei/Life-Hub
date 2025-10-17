@@ -39,6 +39,7 @@ public class CalendarEvent {
 
     private String location;
 
+    @Builder.Default
     @Column(nullable = false)
     private String color = "#3b82f6";
 

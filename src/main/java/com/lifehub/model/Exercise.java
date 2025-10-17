@@ -40,6 +40,7 @@ public class Exercise {
     @JoinColumn(name = "workout_log_id")
     private WorkoutLog workoutLog;
 
+    @Builder.Default
     @Column(nullable = false)
     private Integer position = 0;
 }

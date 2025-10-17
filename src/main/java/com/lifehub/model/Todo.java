@@ -33,10 +33,12 @@ public class Todo {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TodoStatus status = TodoStatus.TODO;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Priority priority = Priority.MEDIUM;
@@ -51,6 +53,7 @@ public class Todo {
     @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
+    @Builder.Default
     @Column(nullable = false)
     private Integer position = 0;
 

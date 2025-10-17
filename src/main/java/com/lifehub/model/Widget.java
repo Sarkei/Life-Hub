@@ -37,15 +37,19 @@ public class Widget {
     @Column(nullable = false)
     private WidgetType type;
 
+    @Builder.Default
     @Column(nullable = false)
     private Integer gridX = 0;
 
+    @Builder.Default
     @Column(nullable = false)
     private Integer gridY = 0;
 
+    @Builder.Default
     @Column(nullable = false)
     private Integer gridWidth = 2;
 
+    @Builder.Default
     @Column(nullable = false)
     private Integer gridHeight = 2;
 
