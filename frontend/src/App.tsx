@@ -12,6 +12,7 @@ import WeightPage from './pages/private/WeightPage'
 import NutritionPage from './pages/private/NutritionPage'
 import WorkDashboard from './pages/work/Dashboard'
 import SchoolDashboard from './pages/school/Dashboard'
+import { SchoolPage } from './pages/SchoolPage'
 import ProfilesPage from './pages/ProfilesPage'
 import SettingsPage from './pages/SettingsPage'
 import NotesPage from './components/NotesPage'
@@ -84,11 +85,18 @@ function App() {
           <Route path="work/projects" element={<ProjectsPage />} />
           
           {/* School Area */}
-          <Route path="school" element={<SchoolDashboard />} />
+          <Route path="school" element={<SchoolPage />} />
+          <Route path="school/dashboard-old" element={<SchoolDashboard />} />
           <Route path="school/todos" element={<TodosPage />} />
           <Route path="school/calendar" element={<CalendarPage />} />
           <Route path="school/notes" element={<NotesPage category="schule" />} />
           <Route path="school/grades" element={<GradesPage />} />
+          <Route path="school/timetable" element={<div className="p-6"><h1 className="text-2xl font-bold">Stundenplan - In Entwicklung</h1><p className="mt-4">Hier kannst du deinen Stundenplan anlegen und verwalten.</p></div>} />
+          <Route path="school/homework" element={<div className="p-6"><h1 className="text-2xl font-bold">Hausaufgaben - In Entwicklung</h1><p className="mt-4">Verwalte hier deine Hausaufgaben mit Kanban-Board.</p></div>} />
+          <Route path="school/exams" element={<div className="p-6"><h1 className="text-2xl font-bold">Prüfungen - In Entwicklung</h1><p className="mt-4">Plane und tracke deine Prüfungen hier.</p></div>} />
+          <Route path="school/subjects" element={<div className="p-6"><h1 className="text-2xl font-bold">Fächer - In Entwicklung</h1><p className="mt-4">Verwalte hier deine Schulfächer.</p></div>} />
+          <Route path="school/study-sessions" element={<div className="p-6"><h1 className="text-2xl font-bold">Lernzeiten - In Entwicklung</h1><p className="mt-4">Tracke deine Lernzeiten mit Timer.</p></div>} />
+          <Route path="school/absences" element={<div className="p-6"><h1 className="text-2xl font-bold">Fehlzeiten - In Entwicklung</h1><p className="mt-4">Erfasse hier deine Fehlzeiten.</p></div>} />
         </Route>
       </Routes>
     </BrowserRouter>

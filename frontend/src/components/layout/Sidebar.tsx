@@ -61,7 +61,6 @@ export default function Sidebar() {
   const [sidebarItems, setSidebarItems] = useState<SidebarItem[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
   const location = useLocation();
 
   // Lade Sidebar-Konfiguration aus Datenbank
@@ -81,7 +80,6 @@ export default function Sidebar() {
 
   const loadSidebarConfig = async () => {
     try {
-      setLoading(true);
       const response = await axios.get(`http://localhost:8080/api/sidebar/${userId}`);
       const config = response.data;
 
@@ -126,8 +124,6 @@ export default function Sidebar() {
       console.error('Fehler beim Laden der Sidebar-Konfiguration:', error);
       // Fallback auf Default-Items
       setSidebarItems(defaultSidebarItems);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -438,9 +434,14 @@ export default function Sidebar() {
       <aside className={`fixed left-0 top-0 h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'} overflow-y-auto z-40`}>
         {/* Header */}
         <div className={`h-16 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between px-4'} border-b border-gray-200 dark:border-gray-700`}>
-          {!isCollapsed && (
-            <NavLink to="/dashboard" className="text-xl font-bold hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-              Life Hub
+          {isCollapsed ? (
+            <NavLink to="/dashboard" className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+              <img src="/icon.svg" alt="Life Hub" className="w-8 h-8" />
+            </NavLink>
+          ) : (
+            <NavLink to="/dashboard" className="flex items-center gap-2 text-xl font-bold hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <img src="/icon.svg" alt="Life Hub Icon" className="w-8 h-8" />
+              <span>Life Hub</span>
             </NavLink>
           )}
           <div className="flex gap-2">
