@@ -59,14 +59,18 @@ export default function Sidebar() {
   const userId = useAuthStore((state) => state.userId);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [sidebarItems, setSidebarItems] = useState<SidebarItem[]>([]);
+  const [sidebarItems, setSidebarItems] = useState<SidebarItem[]>(defaultSidebarItems);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   // Lade Sidebar-Konfiguration aus Datenbank
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) {
+      console.warn('Sidebar: userId is null, using default items');
+      setSidebarItems(defaultSidebarItems);
+      return;
+    }
     
     loadSidebarConfig();
 
@@ -81,8 +85,10 @@ export default function Sidebar() {
 
   const loadSidebarConfig = async () => {
     try {
+      console.log(`🔄 Loading sidebar config for userId: ${userId}`);
       const response = await axios.get(`http://localhost:5000/api/sidebar/${userId}`);
       const config = response.data;
+      console.log('✅ Sidebar config loaded:', config);
 
       // Mapping: Backend-Felder -> Frontend-Items
       const updatedItems = defaultSidebarItems.map(item => {
@@ -121,9 +127,11 @@ export default function Sidebar() {
         return item;
       });
 
+      console.log(`✅ Sidebar items updated: ${updatedItems.filter(i => i.enabled).length} enabled`);
       setSidebarItems(updatedItems);
     } catch (error) {
-      console.error('Fehler beim Laden der Sidebar-Konfiguration:', error);
+      console.error('❌ Fehler beim Laden der Sidebar-Konfiguration:', error);
+      console.log('⚠️ Fallback: Using default sidebar items');
       // Fallback auf Default-Items
       setSidebarItems(defaultSidebarItems);
     }
