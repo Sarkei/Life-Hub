@@ -1,12 +1,13 @@
 services:
-  adminer:
-    image: adminer
-    container_name: lifehub-adminer
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: lifehub-pgadmin
     restart: unless-stopped
     environment:
-      - ADMINER_DEFAULT_SERVER=postgres
+      PGADMIN_DEFAULT_EMAIL: admin@lifehub.local
+      PGADMIN_DEFAULT_PASSWORD: lifehubadmin
     ports:
-      - "5222:8080"
+      - "5222:80"
     depends_on:
       - postgres
     networks:
