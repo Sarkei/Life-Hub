@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
-import { User, Lock, Bell, Palette, Globe, Shield, Trash2, Save, Phone } from 'lucide-react'
+import { User, Lock, Bell, Palette, Globe, Shield, Trash2, Save } from 'lucide-react'
 import axios from 'axios'
 
 interface CountryCode {
