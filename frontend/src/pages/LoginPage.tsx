@@ -14,15 +14,18 @@ export default function LoginPage() {
 
   const loginMutation = useMutation({
     mutationFn: authApi.login,
-    onSuccess: (data) => {
-      setAuth(data.token, data.userId, data.username, data.email)
-      navigate('/')
-    },
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    loginMutation.mutate(formData)
+    try {
+      const data = await loginMutation.mutateAsync(formData)
+      setAuth(data.token, data.userId, data.username, data.email)
+      navigate('/')
+    } catch (error) {
+      // Error wird bereits von useMutation verwaltet
+      console.error('Login failed:', error)
+    }
   }
 
   return (

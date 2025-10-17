@@ -1,7 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { profileApi } from '../api'
 import { useProfileStore } from '../store/profileStore'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+interface Profile {
+  id: number
+  name: string
+  color: string
+  avatarUrl?: string
+}
 
 export default function ProfilesPage() {
   const queryClient = useQueryClient()
@@ -9,24 +16,32 @@ export default function ProfilesPage() {
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [newProfile, setNewProfile] = useState({ name: '', color: '#6366f1' })
 
-  const { data: profiles } = useQuery({
+  const { data: profiles = [] } = useQuery<Profile[]>({
     queryKey: ['profiles'],
     queryFn: profileApi.getProfiles,
-    onSuccess: (data: any) => setProfiles(data),
   })
+
+  // React Query 5.x: onSuccess wurde entfernt, verwende useEffect stattdessen
+  useEffect(() => {
+    if (profiles) {
+      setProfiles(profiles)
+    }
+  }, [profiles, setProfiles])
 
   const createMutation = useMutation({
     mutationFn: profileApi.createProfile,
-    onSuccess: () => {
+  })
+
+  const handleCreateProfile = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      await createMutation.mutateAsync(newProfile)
       queryClient.invalidateQueries({ queryKey: ['profiles'] })
       setShowCreateForm(false)
       setNewProfile({ name: '', color: '#6366f1' })
-    },
-  })
-
-  const handleCreateProfile = (e: React.FormEvent) => {
-    e.preventDefault()
-    createMutation.mutate(newProfile)
+    } catch (error) {
+      console.error('Create profile failed:', error)
+    }
   }
 
   return (
@@ -85,7 +100,7 @@ export default function ProfilesPage() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {profiles?.map((profile: any) => (
+        {profiles.map((profile) => (
           <div
             key={profile.id}
             className={`card cursor-pointer transition-all hover:scale-105 ${
@@ -102,7 +117,7 @@ export default function ProfilesPage() {
         ))}
       </div>
 
-      {profiles?.length === 0 && (
+      {profiles.length === 0 && (
         <div className="card text-center py-12">
           <p className="text-gray-600 dark:text-gray-400">
             Noch keine Profile vorhanden. Erstelle dein erstes Profil!

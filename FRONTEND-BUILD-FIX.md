@@ -130,11 +130,79 @@ Successfully built!
 
 ---
 
+## ⚡ React Query v5 Änderungen
+
+### onSuccess entfernt
+
+React Query v5 hat `onSuccess` aus `useQuery` und `useMutation` entfernt.
+
+**Migration Pattern:**
+
+#### Für useQuery:
+```typescript
+// ❌ Alt (React Query v4):
+const { data } = useQuery({
+  queryKey: ['data'],
+  queryFn: fetchData,
+  onSuccess: (data) => {
+    doSomething(data)
+  }
+})
+
+// ✅ Neu (React Query v5):
+const { data } = useQuery({
+  queryKey: ['data'],
+  queryFn: fetchData,
+})
+
+useEffect(() => {
+  if (data) {
+    doSomething(data)
+  }
+}, [data])
+```
+
+#### Für useMutation:
+```typescript
+// ❌ Alt (React Query v4):
+const mutation = useMutation({
+  mutationFn: updateData,
+  onSuccess: (data) => {
+    doSomething(data)
+  }
+})
+
+mutation.mutate(payload)
+
+// ✅ Neu (React Query v5):
+const mutation = useMutation({
+  mutationFn: updateData,
+})
+
+const handleSubmit = async () => {
+  try {
+    const data = await mutation.mutateAsync(payload)
+    doSomething(data)
+  } catch (error) {
+    // Handle error
+  }
+}
+```
+
+**Geänderte Dateien:**
+- ✅ `ProfilesPage.tsx` - useQuery mit useEffect, useMutation mit mutateAsync
+- ✅ `LoginPage.tsx` - useMutation mit mutateAsync
+- ✅ `RegisterPage.tsx` - useMutation mit mutateAsync
+
+---
+
 ## ✨ Zusammenfassung
 
 | Was | Status |
 |-----|--------|
 | Frontend Dockerfile | ✅ Gefixt (`npm install`) |
+| React Query v5 Migration | ✅ Gefixt (onSuccess entfernt) |
+| TypeScript Types | ✅ Gefixt (Profile interface) |
 | Backend Build | ✅ Funktioniert |
 | Docker Compose | ✅ Bereit |
 | NAS Deployment | ✅ Ready |

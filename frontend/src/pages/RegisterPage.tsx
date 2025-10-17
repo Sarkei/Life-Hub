@@ -15,15 +15,18 @@ export default function RegisterPage() {
 
   const registerMutation = useMutation({
     mutationFn: authApi.register,
-    onSuccess: (data) => {
-      setAuth(data.token, data.userId, data.username, data.email)
-      navigate('/')
-    },
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    registerMutation.mutate(formData)
+    try {
+      const data = await registerMutation.mutateAsync(formData)
+      setAuth(data.token, data.userId, data.username, data.email)
+      navigate('/')
+    } catch (error) {
+      // Error wird bereits von useMutation verwaltet
+      console.error('Registration failed:', error)
+    }
   }
 
   return (
