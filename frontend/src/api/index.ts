@@ -173,3 +173,46 @@ export const widgetApi = {
     await api.delete(`/widgets/${id}`)
   },
 }
+
+export interface Note {
+  id?: number
+  title: string
+  content: string
+  category: 'privat' | 'arbeit' | 'schule'
+  profileId?: number
+  filePath?: string
+  userId?: number
+  createdAt?: string
+  updatedAt?: string
+}
+
+export const noteApi = {
+  getAll: async (): Promise<Note[]> => {
+    const response = await api.get('/notes')
+    return response.data
+  },
+
+  getByCategory: async (category: string): Promise<Note[]> => {
+    const response = await api.get(`/notes/category/${category}`)
+    return response.data
+  },
+
+  getById: async (id: number): Promise<Note> => {
+    const response = await api.get(`/notes/${id}`)
+    return response.data
+  },
+
+  create: async (note: Note): Promise<Note> => {
+    const response = await api.post('/notes', note)
+    return response.data
+  },
+
+  update: async (id: number, note: Note): Promise<Note> => {
+    const response = await api.put(`/notes/${id}`, note)
+    return response.data
+  },
+
+  delete: async (id: number): Promise<void> => {
+    await api.delete(`/notes/${id}`)
+  },
+}

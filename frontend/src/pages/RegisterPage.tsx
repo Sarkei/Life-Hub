@@ -1,4 +1,18 @@
 import { useState } from 'react'
+
+// Hilfskomponente für Passwort-Anforderung
+function PasswordRequirement({ label, valid }: { label: string; valid: boolean }) {
+  return (
+    <li className={valid ? 'text-green-600 flex items-center' : 'text-red-600 flex items-center'}>
+      {valid ? (
+        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+      ) : (
+        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+      )}
+      {label}
+    </li>
+  )
+}
 import { useNavigate, Link } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { authApi } from '../api'
@@ -64,6 +78,7 @@ export default function RegisterPage() {
             />
           </div>
 
+
           <div>
             <label className="block text-sm font-medium mb-2">Passwort</label>
             <input
@@ -74,9 +89,42 @@ export default function RegisterPage() {
                 setFormData({ ...formData, password: e.target.value })
               }
               required
-              minLength={6}
+              minLength={8}
             />
+            {/* Passwort-Anforderungen */}
+            <ul className="mt-2 space-y-1 text-sm">
+              <PasswordRequirement
+                label="Mindestens 8 Zeichen"
+                valid={formData.password.length >= 8}
+              />
+              <PasswordRequirement
+                label="Mindestens ein Großbuchstabe"
+                valid={/[A-Z]/.test(formData.password)}
+              />
+              <PasswordRequirement
+                label="Mindestens eine Zahl"
+                valid={/[0-9]/.test(formData.password)}
+              />
+              <PasswordRequirement
+                label="Mindestens ein Sonderzeichen"
+                valid={/[^A-Za-z0-9]/.test(formData.password)}
+              />
+            </ul>
           </div>
+
+// Hilfskomponente für Passwort-Anforderung
+function PasswordRequirement({ label, valid }: { label: string; valid: boolean }) {
+  return (
+    <li className={valid ? 'text-green-600 flex items-center' : 'text-red-600 flex items-center'}>
+      {valid ? (
+        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+      ) : (
+        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+      )}
+      {label}
+    </li>
+  )
+}
 
           {registerMutation.isError && (
             <div className="text-red-600 text-sm text-center">

@@ -22,6 +22,10 @@ spring:
       secret: ${JWT_SECRET:your-secret-key-change-this-in-production-make-it-long-and-secure}
       expiration: 86400000 # 24 hours
 
+notes:
+  storage:
+    path: ${NOTES_STORAGE_PATH:/app/data}
+
 server:
   port: ${SERVER_PORT:5000}
   error:
