@@ -15,17 +15,14 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
   postgres:
-    image: postgres:latest
+    image: postgres:16-alpine
     container_name: lifehub-db
-    user: postgres
     environment:
       POSTGRES_DB: lifehub
       POSTGRES_USER: lifehub
       POSTGRES_PASSWORD: lifehub
     ports:
       - "5555:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     networks:
       - lifehub-network
     labels:
@@ -83,9 +80,6 @@ services:
       - lifehub-network
     labels:
       - "com.centurylinklabs.watchtower.scope=lifehub"
-
-volumes:
-  postgres_data:
 
 networks:
   lifehub-network:
