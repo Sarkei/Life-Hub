@@ -1,3 +1,6 @@
+# Alternative Docker Compose für NAS mit Postgres-Volume-Problemen
+# Nutze diese Version, falls die normale Version Mounting-Fehler wirft
+
 services:
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -14,6 +17,7 @@ services:
       - lifehub-network
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
+      
   postgres:
     image: postgres:latest
     container_name: lifehub-db
@@ -21,11 +25,13 @@ services:
       POSTGRES_DB: lifehub
       POSTGRES_USER: lifehub
       POSTGRES_PASSWORD: lifehub
-      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "5555:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    # KEIN VOLUME - Daten werden im Container gespeichert
+    # Achtung: Daten gehen bei 'docker-compose down' verloren!
+    # Nur für initiales Testing
+    tmpfs:
+      - /var/lib/postgresql/data
     networks:
       - lifehub-network
     labels:
@@ -83,9 +89,6 @@ services:
       - lifehub-network
     labels:
       - "com.centurylinklabs.watchtower.scope=lifehub"
-
-volumes:
-  postgres_data:
 
 networks:
   lifehub-network:
