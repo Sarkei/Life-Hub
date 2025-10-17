@@ -348,11 +348,11 @@ http://nas-ip-adresse:5000
 ---
 
 
-## 🔁 Schritt 9b: Automatisches Git Pull per Cronjob
+## 🔁 Schritt 9b: Automatisches Git Pull + Docker Rebuild mit Watchtower
+
+### Teil 1: Git Pull Cronjob
 
 Um sicherzustellen, dass dein NAS immer die neuesten Änderungen aus dem Git-Repository zieht, kannst du einen Cronjob einrichten, der alle 5 Minuten automatisch ein `git pull` im Projektverzeichnis ausführt.
-
-### Cronjob einrichten:
 
 ```bash
 crontab -e
@@ -361,13 +361,148 @@ crontab -e
 Füge folgende Zeile am Ende der Datei hinzu (Pfad ggf. anpassen!):
 
 ```cron
-*/5 * * * * cd /home/dein-username/life-hub && git pull >> /home/dein-username/life-hub/git-cron.log 2>&1
+* * * * * cd /home/dein-username/life-hub && git pull >> /home/dein-username/life-hub/git-cron.log 2>&1
 ```
 
 **Hinweise:**
 - Ersetze `/home/dein-username/life-hub` durch deinen tatsächlichen Projektpfad, falls abweichend.
+- Der Cronjob läuft **jede Minute** (`* * * * *`)
 - Der Output wird in `git-cron.log` gespeichert (optional).
 - Der Cronjob läuft unter dem aktuellen Benutzer. Stelle sicher, dass der Benutzer Schreibrechte im Verzeichnis hat und der SSH-Key für Git (falls privat) eingerichtet ist.
+
+### Teil 2: Watchtower für automatisches Rebuild
+
+⚠️ **WICHTIG:** Der Cronjob pullt nur den Code, aber Docker nutzt weiterhin die alte Version!
+
+**Watchtower** überwacht deine Container und baut sie automatisch neu, wenn sich der Code ändert.
+
+Watchtower ist bereits in `docker-compose.yml` integriert und ist so konfiguriert, dass er **nur Life Hub Container** überwacht und nicht mit deinem anderen Watchtower kollidiert:
+
+```yaml
+watchtower:
+  image: containrrr/watchtower:latest
+  container_name: lifehub-watchtower
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  command: --interval 300 --cleanup --scope lifehub
+  environment:
+    - WATCHTOWER_SCOPE=lifehub
+  ports:
+    - "8091:8080"  # Eigener Port für API/Metriken
+  restart: unless-stopped
+  labels:
+    - "com.centurylinklabs.watchtower.scope=lifehub"
+```
+
+**Was macht dieser Watchtower?**
+- ✅ Überprüft alle 300 Sekunden (5 Minuten), ob sich der Code geändert hat
+- ✅ Baut **NUR** Container mit Label `scope=lifehub` neu (Backend & Frontend)
+- ✅ Ignoriert andere Container (Postgres, pgAdmin, andere Apps)
+- ✅ Läuft auf eigenem Port 8091 (kein Konflikt mit anderem Watchtower)
+- ✅ Entfernt alte Container-Images automatisch (`--cleanup`)
+- ✅ Startet die Container automatisch neu
+
+**Watchtower starten (beim ersten Mal):**
+
+```bash
+cd ~/life-hub
+
+# Alle Container inkl. Watchtower starten
+docker-compose up -d
+
+# Watchtower-Status prüfen
+docker logs lifehub-watchtower
+```
+
+### Kompletter Automatisierungs-Workflow:
+
+```
+1. Du pushst Code-Änderungen zu Git
+2. Nach max. 1 Minute: Cronjob pullt neue Version
+3. Nach weiteren ~5 Minuten: Watchtower erkennt Änderungen
+4. Watchtower baut NUR Backend & Frontend Container neu
+5. Container starten mit neuer Version
+6. Du siehst die Änderungen ohne manuelles Eingreifen! 🎉
+```
+
+**Gesamt-Zeitraum:** Ca. 6-7 Minuten von Push bis Live 🚀
+
+### Watchtower-Logs überwachen:
+
+```bash
+# Live-Logs anzeigen
+docker logs -f lifehub-watchtower
+
+# Letzte 50 Zeilen
+docker logs --tail=50 lifehub-watchtower
+```
+
+### Alternative: Manuelles Rebuild-Script
+
+Falls du Watchtower nicht verwenden möchtest, kannst du auch ein Script für manuelles Rebuild erstellen:
+
+```bash
+nano ~/rebuild-lifehub.sh
+```
+
+**Script-Inhalt:**
+
+```bash
+#!/bin/bash
+cd /home/dein-username/life-hub
+
+echo "🔄 Pulling latest changes from Git..."
+git pull
+
+echo "🐳 Rebuilding Docker containers..."
+docker-compose build --no-cache backend frontend
+
+echo "🚀 Restarting containers..."
+docker-compose up -d
+
+echo "✅ Rebuild complete! Checking status..."
+docker-compose ps
+```
+
+**Ausführbar machen:**
+
+```bash
+chmod +x ~/rebuild-lifehub.sh
+
+# Ausführen
+~/rebuild-lifehub.sh
+```
+
+**Oder als Cronjob (z.B. stündlich):**
+
+```bash
+crontab -e
+
+# Füge hinzu (jede Stunde um :05 Minuten)
+5 * * * * /home/dein-username/rebuild-lifehub.sh >> /home/dein-username/rebuild-lifehub.log 2>&1
+```
+
+### 🔒 Sicherheit: Scope-Isolation
+
+**Wichtig:** Der Life Hub Watchtower läuft isoliert von deinem anderen Watchtower:
+
+- **Port:** 8091 (anderer Watchtower vermutlich auf 8080)
+- **Scope:** Nur Container mit Label `scope=lifehub`
+- **Container-Name:** `lifehub-watchtower` (eindeutiger Name)
+
+**Andere Container werden NICHT überwacht:**
+- ✅ Postgres & pgAdmin haben `watchtower.enable=false`
+- ✅ Andere Apps ohne `scope=lifehub` Label werden ignoriert
+- ✅ Dein bestehender Watchtower läuft ungestört weiter
+
+### ⚡ Auto-Updates für Base Images:
+
+Die folgenden Images werden automatisch auf die neueste Version aktualisiert:
+- `postgres:latest` - Immer neueste PostgreSQL Version
+- `pgadmin4:latest` - Immer neueste pgAdmin Version
+- `watchtower:latest` - Immer neueste Watchtower Version
+
+**Hinweis:** Postgres & pgAdmin werden NUR bei manuellem `docker-compose pull` aktualisiert, nicht durch Watchtower!
 
 ---
 ## 🔄 Schritt 9: Automatischer Start beim NAS-Neustart
