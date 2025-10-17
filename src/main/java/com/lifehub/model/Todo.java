@@ -1,17 +1,12 @@
 package com.lifehub.model;
 
-import com.lifehub.model.enums.AreaType;
-import com.lifehub.model.enums.Priority;
-import com.lifehub.model.enums.TodoStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,12 +15,14 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 public class Todo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(nullable = false)
     private String title;
@@ -33,36 +30,55 @@ public class Todo {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TodoStatus status = TodoStatus.TODO;
+    @Column(nullable = false, length = 50)
+    private String category; // PRIVAT, ARBEIT, SCHULE
 
-    @Builder.Default
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private Priority priority = Priority.MEDIUM;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Status status = Status.TODO;
+
     @Column(nullable = false)
-    private AreaType area;
+    private Boolean completed = false;
 
-    private LocalDateTime dueDate;
+    @Column(name = "due_date")
+    private LocalDate dueDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id", nullable = false)
-    private Profile profile;
+    @Column(name = "completed_at")
+    private LocalDateTime completedAt;
 
-    @Builder.Default
-    @Column(nullable = false)
-    private Integer position = 0;
+    @Column(columnDefinition = "TEXT[]")
+    private String[] tags;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(length = 7)
+    private String color;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    private LocalDateTime completedAt;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    // Enums
+    public enum Priority {
+        LOW, MEDIUM, HIGH, URGENT
+    }
+
+    public enum Status {
+        TODO, IN_PROGRESS, DONE
+    }
 }

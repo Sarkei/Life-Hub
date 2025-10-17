@@ -1,16 +1,14 @@
 package com.lifehub.model;
 
-import com.lifehub.model.enums.AreaType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "calendar_events")
@@ -18,12 +16,14 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 public class CalendarEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(nullable = false)
     private String title;
@@ -31,34 +31,69 @@ public class CalendarEvent {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
-    private LocalDateTime startTime;
-
-    @Column(nullable = false)
-    private LocalDateTime endTime;
-
     private String location;
 
-    @Builder.Default
-    @Column(nullable = false)
-    private String color = "#3b82f6";
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AreaType area;
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id", nullable = false)
-    private Profile profile;
+    @Column(name = "start_time")
+    private LocalTime startTime;
 
-    @Builder.Default
-    @Column(nullable = false)
+    @Column(name = "end_time")
+    private LocalTime endTime;
+
+    @Column(name = "all_day", nullable = false)
     private Boolean allDay = false;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, length = 50)
+    private String category;
+
+    @Column(name = "event_type", length = 50)
+    private String eventType;
+
+    @Column(length = 7)
+    private String color = "#3B82F6";
+
+    private Boolean recurring = false;
+
+    @Column(name = "recurrence_rule")
+    private String recurrenceRule;
+
+    @Column(name = "reminder_minutes")
+    private Integer reminderMinutes;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private EventStatus status = EventStatus.CONFIRMED;
+
+    @Column(name = "related_entity_type", length = 50)
+    private String relatedEntityType; // EXAM, TRAINING, HOMEWORK
+
+    @Column(name = "related_entity_id")
+    private Long relatedEntityId;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    // Enum
+    public enum EventStatus {
+        CONFIRMED, TENTATIVE, CANCELLED
+    }
 }
