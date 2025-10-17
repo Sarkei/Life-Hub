@@ -7,6 +7,8 @@ import {
   Wallet, Briefcase, FolderKanban, GraduationCap, BookMarked,
   ChevronLeft, ChevronRight, Settings, ChevronDown, Home, X
 } from 'lucide-react';
+import axios from 'axios';
+import { useAuthStore } from '../../store/authStore';
 
 interface SidebarItem {
   id: string;
@@ -53,20 +55,20 @@ const defaultSidebarItems: SidebarItem[] = [
 ];
 
 export default function Sidebar() {
+  const userId = useAuthStore((state) => state.userId);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [sidebarItems, setSidebarItems] = useState<SidebarItem[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
 
+  // Lade Sidebar-Konfiguration aus Datenbank
   useEffect(() => {
-    const savedConfig = localStorage.getItem('sidebarConfig');
-    if (savedConfig) {
-      setSidebarItems(JSON.parse(savedConfig));
-    } else {
-      setSidebarItems(defaultSidebarItems);
-    }
+    if (!userId) return;
+    
+    loadSidebarConfig();
 
     // Mobile Detection
     const checkMobile = () => {
@@ -75,11 +77,106 @@ export default function Sidebar() {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  }, [userId]);
 
-  const saveConfig = (items: SidebarItem[]) => {
+  const loadSidebarConfig = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`http://localhost:8080/api/sidebar/${userId}`);
+      const config = response.data;
+
+      // Mapping: Backend-Felder -> Frontend-Items
+      const updatedItems = defaultSidebarItems.map(item => {
+        const fieldMap: Record<string, keyof typeof config> = {
+          'dashboard': 'dashboard',
+          'todos': 'todos',
+          'calendar': 'calendar',
+          'profile': 'contacts',
+          'fitness': 'fitness',
+          'weight': 'weight',
+          'nutrition': 'nutrition',
+          'goals': 'goals',
+          'journal': 'diary',
+          'shopping': 'shopping',
+          'health': 'health',
+          'travel': 'travel',
+          'movies': 'movies',
+          'music': 'music',
+          'photos': 'photos',
+          'quick-notes': 'quickNotes',
+          'time-tracking-private': 'timeTracking',
+          'statistics': 'statistics',
+          'news': 'news',
+          'habits': 'habits',
+          'budget': 'budget',
+          'time-tracking-work': 'timeTracking',
+          'projects': 'projects',
+          'grades': 'grades',
+        };
+
+        const backendField = fieldMap[item.id];
+        if (backendField && config[backendField] !== undefined) {
+          return { ...item, enabled: config[backendField] };
+        }
+        return item;
+      });
+
+      setSidebarItems(updatedItems);
+    } catch (error) {
+      console.error('Fehler beim Laden der Sidebar-Konfiguration:', error);
+      // Fallback auf Default-Items
+      setSidebarItems(defaultSidebarItems);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveConfig = async (items: SidebarItem[]) => {
     setSidebarItems(items);
-    localStorage.setItem('sidebarConfig', JSON.stringify(items));
+
+    // Speichere in Datenbank (KEIN Browser-Cache!)
+    if (!userId) return;
+
+    try {
+      const updates: Record<string, boolean> = {};
+      items.forEach(item => {
+        const fieldMap: Record<string, string> = {
+          'dashboard': 'dashboard',
+          'todos': 'todos',
+          'calendar': 'calendar',
+          'profile': 'contacts',
+          'fitness': 'fitness',
+          'weight': 'weight',
+          'nutrition': 'nutrition',
+          'goals': 'goals',
+          'journal': 'diary',
+          'shopping': 'shopping',
+          'health': 'health',
+          'travel': 'travel',
+          'movies': 'movies',
+          'music': 'music',
+          'photos': 'photos',
+          'quick-notes': 'quickNotes',
+          'time-tracking-private': 'timeTracking',
+          'statistics': 'statistics',
+          'news': 'news',
+          'habits': 'habits',
+          'budget': 'budget',
+          'time-tracking-work': 'timeTracking',
+          'projects': 'projects',
+          'grades': 'grades',
+        };
+
+        const backendField = fieldMap[item.id];
+        if (backendField) {
+          updates[backendField] = item.enabled;
+        }
+      });
+
+      await axios.post(`http://localhost:8080/api/sidebar/${userId}`, updates);
+    } catch (error) {
+      console.error('Fehler beim Speichern der Sidebar-Konfiguration:', error);
+    }
   };
 
   const toggleItem = (id: string) => {
@@ -89,8 +186,53 @@ export default function Sidebar() {
     saveConfig(newItems);
   };
 
-  const resetToDefaults = () => {
-    saveConfig(defaultSidebarItems);
+  const resetToDefaults = async () => {
+    if (!userId) return;
+
+    try {
+      const response = await axios.post(`http://localhost:8080/api/sidebar/${userId}/reset`);
+      const config = response.data;
+
+      // Aktualisiere Items mit Reset-Werten
+      const updatedItems = defaultSidebarItems.map(item => {
+        const fieldMap: Record<string, keyof typeof config> = {
+          'dashboard': 'dashboard',
+          'todos': 'todos',
+          'calendar': 'calendar',
+          'profile': 'contacts',
+          'fitness': 'fitness',
+          'weight': 'weight',
+          'nutrition': 'nutrition',
+          'goals': 'goals',
+          'journal': 'diary',
+          'shopping': 'shopping',
+          'health': 'health',
+          'travel': 'travel',
+          'movies': 'movies',
+          'music': 'music',
+          'photos': 'photos',
+          'quick-notes': 'quickNotes',
+          'time-tracking-private': 'timeTracking',
+          'statistics': 'statistics',
+          'news': 'news',
+          'habits': 'habits',
+          'budget': 'budget',
+          'time-tracking-work': 'timeTracking',
+          'projects': 'projects',
+          'grades': 'grades',
+        };
+
+        const backendField = fieldMap[item.id];
+        if (backendField && config[backendField] !== undefined) {
+          return { ...item, enabled: config[backendField] };
+        }
+        return item;
+      });
+
+      setSidebarItems(updatedItems);
+    } catch (error) {
+      console.error('Fehler beim Zurücksetzen:', error);
+    }
   };
 
   const generalItems = sidebarItems.filter(item => item.category === 'general' && item.enabled);

@@ -23,6 +23,7 @@ import {
   Quote
 } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
+import { useAuthStore } from '../store/authStore'
 
 interface TreeNode {
   id: number
@@ -38,6 +39,7 @@ interface NotesPageProps {
 }
 
 export default function NotesPage({ category }: NotesPageProps) {
+  const token = useAuthStore((state) => state.token)
   const [tree, setTree] = useState<TreeNode[]>([])
   const [selectedNode, setSelectedNode] = useState<TreeNode | null>(null)
   const [content, setContent] = useState('')
@@ -57,7 +59,7 @@ export default function NotesPage({ category }: NotesPageProps) {
     try {
       const response = await fetch(`/api/notes/folders/tree?category=${category}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth-storage')}`
+          'Authorization': `Bearer ${token}`
         }
       })
       const data = await response.json()
@@ -75,7 +77,7 @@ export default function NotesPage({ category }: NotesPageProps) {
       const response = await fetch('/api/notes/folders/create-folder', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth-storage')}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -105,7 +107,7 @@ export default function NotesPage({ category }: NotesPageProps) {
       const response = await fetch('/api/notes/folders/create-note', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth-storage')}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -138,7 +140,7 @@ export default function NotesPage({ category }: NotesPageProps) {
     try {
       const response = await fetch(`/api/notes/${node.id}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth-storage')}`
+          'Authorization': `Bearer ${token}`
         }
       })
       const data = await response.json()
@@ -157,7 +159,7 @@ export default function NotesPage({ category }: NotesPageProps) {
       const response = await fetch(`/api/notes/folders/update-note/${selectedNode.id}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth-storage')}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ content })
@@ -187,7 +189,7 @@ export default function NotesPage({ category }: NotesPageProps) {
       const response = await fetch('/api/notes/folders/upload-pdf', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth-storage')}`
+          'Authorization': `Bearer ${token}`
         },
         body: formData
       })
@@ -208,7 +210,7 @@ export default function NotesPage({ category }: NotesPageProps) {
       const response = await fetch(`/api/notes/folders/${node.id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth-storage')}`
+          'Authorization': `Bearer ${token}`
         }
       })
 
