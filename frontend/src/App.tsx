@@ -14,6 +14,7 @@ import WorkDashboard from './pages/work/Dashboard'
 import SchoolDashboard from './pages/school/Dashboard'
 import ProfilesPage from './pages/ProfilesPage'
 import SettingsPage from './pages/SettingsPage'
+import NotesPage from './components/NotesPage'
 
 function App() {
   const { token } = useAuthStore()
@@ -42,16 +43,19 @@ function App() {
           <Route path="private/fitness" element={<FitnessPage />} />
           <Route path="private/weight" element={<WeightPage />} />
           <Route path="private/meals" element={<MealsPage />} />
+          <Route path="private/notes" element={<NotesPage category="privat" />} />
           
           {/* Work Area */}
           <Route path="work" element={<WorkDashboard />} />
           <Route path="work/todos" element={<TodosPage />} />
           <Route path="work/calendar" element={<CalendarPage />} />
+          <Route path="work/notes" element={<NotesPage category="arbeit" />} />
           
           {/* School Area */}
           <Route path="school" element={<SchoolDashboard />} />
           <Route path="school/todos" element={<TodosPage />} />
           <Route path="school/calendar" element={<CalendarPage />} />
+          <Route path="school/notes" element={<NotesPage category="schule" />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -31,14 +31,36 @@ public class Note {
     private String content;
 
     @Column(nullable = false)
-    private String filePath; // Pfad zur .md Datei auf dem Server
+    private String filePath; // Pfad zur .md oder .pdf Datei auf dem Server
 
     @Column(nullable = false)
     private String category; // privat, arbeit, schule
+    
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private NoteType type = NoteType.FILE; // FILE oder FOLDER
+    
+    @Column
+    @Enumerated(EnumType.STRING)
+    private FileType fileType = FileType.MARKDOWN; // MARKDOWN oder PDF
+    
+    @Column(name = "parent_id")
+    private Long parentId; // Für Ordnerstruktur
+    
+    @Column(name = "folder_path")
+    private String folderPath; // z.B. "/Mathematik/Analysis"
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+    
+    public enum NoteType {
+        FILE, FOLDER
+    }
+    
+    public enum FileType {
+        MARKDOWN, PDF, NONE
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")

@@ -11,7 +11,11 @@ import {
   GraduationCap,
   Users,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  FileText,
+  TrendingUp,
+  DollarSign,
+  BookOpen
 } from 'lucide-react'
 
 export default function Sidebar() {
@@ -113,6 +117,36 @@ export default function Sidebar() {
             <Utensils size={20} />
             {!isCollapsed && <span>Ernährung</span>}
           </NavLink>
+          <NavLink 
+            to="/private/notes" 
+            className={({ isActive }) => 
+              `sidebar-link ${isActive ? 'sidebar-link-active' : ''} ${isCollapsed ? 'justify-center' : ''}`
+            }
+            title={isCollapsed ? 'Notizen' : ''}
+          >
+            <FileText size={20} />
+            {!isCollapsed && <span>Notizen</span>}
+          </NavLink>
+          <NavLink 
+            to="/private/habits" 
+            className={({ isActive }) => 
+              `sidebar-link ${isActive ? 'sidebar-link-active' : ''} ${isCollapsed ? 'justify-center' : ''}`
+            }
+            title={isCollapsed ? 'Gewohnheiten' : ''}
+          >
+            <TrendingUp size={20} />
+            {!isCollapsed && <span>Gewohnheiten</span>}
+          </NavLink>
+          <NavLink 
+            to="/private/budget" 
+            className={({ isActive }) => 
+              `sidebar-link ${isActive ? 'sidebar-link-active' : ''} ${isCollapsed ? 'justify-center' : ''}`
+            }
+            title={isCollapsed ? 'Budget' : ''}
+          >
+            <DollarSign size={20} />
+            {!isCollapsed && <span>Budget</span>}
+          </NavLink>
         </div>
 
         <div className="pt-4">
@@ -151,6 +185,16 @@ export default function Sidebar() {
             <Calendar size={20} />
             {!isCollapsed && <span>Kalender</span>}
           </NavLink>
+          <NavLink 
+            to="/work/notes" 
+            className={({ isActive }) => 
+              `sidebar-link ${isActive ? 'sidebar-link-active' : ''} ${isCollapsed ? 'justify-center' : ''}`
+            }
+            title={isCollapsed ? 'Arbeit Notizen' : ''}
+          >
+            <FileText size={20} />
+            {!isCollapsed && <span>Notizen</span>}
+          </NavLink>
         </div>
 
         <div className="pt-4">
@@ -188,6 +232,16 @@ export default function Sidebar() {
           >
             <Calendar size={20} />
             {!isCollapsed && <span>Kalender</span>}
+          </NavLink>
+          <NavLink 
+            to="/school/notes" 
+            className={({ isActive }) => 
+              `sidebar-link ${isActive ? 'sidebar-link-active' : ''} ${isCollapsed ? 'justify-center' : ''}`
+            }
+            title={isCollapsed ? 'Schule Notizen' : ''}
+          >
+            <BookOpen size={20} />
+            {!isCollapsed && <span>Notizen</span>}
           </NavLink>
         </div>
       </nav>

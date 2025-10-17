@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "install-deps": "npm install react-syntax-highlighter @types/react-syntax-highlighter"
+  }
+}

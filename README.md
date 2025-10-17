@@ -1,6 +1,30 @@
-# Life Hub
+# 🚀 Life Hub
 
 Eine moderne All-in-One Life Management Application mit Java Spring Boot Backend und React Frontend.
+
+## 📚 Dokumentation
+
+> **Neu aktualisiert!** Vollständiges Notizen-System, Settings-Seite, erweiterte Todo/Fitness-Tracker und vieles mehr!
+
+### 📖 Haupt-Dokumentation
+- **[🎉 UPDATE SUMMARY](UPDATE_SUMMARY.md)** - Vollständige Übersicht aller neuen Features
+- **[⚡ QUICK START](QUICK_START.md)** - Schnellstart-Anleitung in 5 Minuten
+- **[🚀 DEPLOYMENT GUIDE](DEPLOYMENT_GUIDE.md)** - Schritt-für-Schritt Deployment auf NAS
+- **[📝 NOTES SYSTEM](NOTES_UPDATE_README.md)** - Technische Details zum Notizen-System
+- **[📋 TODO & ROADMAP](TODO.md)** - Feature-Roadmap und geplante Erweiterungen
+- **[📁 PROJECT STRUCTURE](PROJECT_STRUCTURE.md)** - Projekt-Übersicht und Architektur
+
+### 🎯 Was ist neu?
+- ✅ **Notizen-System** mit Ordnerstruktur, Markdown-Editor (13 Toolbar-Buttons), Syntax-Highlighting, PDF-Support
+- ✅ **Settings-Seite** mit 7 Sektionen (Profil, Passwort, Notifications, Theme, Sprache, Privacy)
+- ✅ **Todo-System** mit Prioritäten (🔴🟡🟢), Filter, Tags, Fälligkeitsdatum, Statistiken
+- ✅ **Fitness-Tracker** mit Workouts (Strength/Cardio/Flexibility), Exercises, Statistiken
+- ✅ **Kollabierbare Sidebar** (80px ↔ 256px) mit Toggle-Button
+- ✅ **Username-Anzeige** im Header mit "Eingeloggt als [Username]"
+- ✅ **Logout/Settings** Buttons funktional
+- ✅ **JWT-Fix** - Base64-encoded Secret
+
+---
 
 ## Features
 
