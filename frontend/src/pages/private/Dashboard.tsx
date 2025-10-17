@@ -21,14 +21,6 @@ interface CalendarEvent {
   location?: string
 }
 
-interface Workout {
-  id: number
-  date: string
-  type: string
-  duration: number
-  calories: number
-}
-
 export default function PrivateDashboard() {
   const navigate = useNavigate()
   const [upcomingEvents, setUpcomingEvents] = useState<CalendarEvent[]>([])
@@ -69,8 +61,8 @@ export default function PrivateDashboard() {
         activeTodos: mockTodos.filter(t => !t.completed).length,
         completedTodos: mockTodos.filter(t => t.completed).length,
         upcomingEvents: eventsResponse.data.length,
-        weekWorkouts: mockWorkouts.length,
-        weekCalories: mockWorkouts.reduce((sum, w) => sum + w.calories, 0)
+        weekWorkouts: 0,
+        weekCalories: 0
       })
     } catch (error) {
       console.error('Error loading dashboard data:', error)

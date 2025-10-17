@@ -23,7 +23,6 @@ import {
   Quote
 } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
-import type { Components } from 'react-markdown'
 
 interface TreeNode {
   id: number
