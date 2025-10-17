@@ -9,7 +9,7 @@ import TodosPage from './pages/private/TodosPage'
 import CalendarPage from './pages/private/CalendarPage'
 import FitnessPage from './pages/private/FitnessPage'
 import WeightPage from './pages/private/WeightPage'
-import MealsPage from './pages/private/MealsPage'
+import NutritionPage from './pages/private/NutritionPage'
 import WorkDashboard from './pages/work/Dashboard'
 import SchoolDashboard from './pages/school/Dashboard'
 import ProfilesPage from './pages/ProfilesPage'
@@ -58,7 +58,7 @@ function App() {
           <Route path="private/calendar" element={<CalendarPage />} />
           <Route path="private/fitness" element={<FitnessPage />} />
           <Route path="private/weight" element={<WeightPage />} />
-          <Route path="private/meals" element={<MealsPage />} />
+          <Route path="private/nutrition" element={<NutritionPage />} />
           <Route path="private/notes" element={<NotesPage category="privat" />} />
           <Route path="private/habits" element={<HabitsPage />} />
           <Route path="private/budget" element={<BudgetPage />} />
