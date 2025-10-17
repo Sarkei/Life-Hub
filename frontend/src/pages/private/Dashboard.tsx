@@ -43,7 +43,7 @@ export default function PrivateDashboard() {
   const loadDashboardData = async () => {
     try {
       // Get userId from auth store
-      const userId = useAuthStore.getState().user?.id || 1
+      const userId = useAuthStore.getState().userId || 1
       
       // Load dashboard data from new unified endpoint
       const dashboardResponse = await axios.get(api.dashboard.getData(userId))

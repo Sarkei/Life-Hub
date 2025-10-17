@@ -4,10 +4,10 @@ import {
   LayoutDashboard, CheckSquare, Calendar, Dumbbell, Scale, Apple, 
   Users, Target, BookOpen, ShoppingCart, HeartPulse, Plane, Film, 
   Music, Image, StickyNote, Clock, BarChart3, Newspaper, Trophy,
-  Wallet, Briefcase, FolderKanban, GraduationCap, BookMarked,
+  Wallet, Briefcase, FolderKanban, GraduationCap,
   ChevronLeft, ChevronRight, Settings, ChevronDown, Home, X,
   CalendarDays, ClipboardList, FileText, TrendingUp, FileBox,
-  Upload, FolderOpen, CreditCard, Brain, FileEdit, Timer, UserX
+  Upload, FolderOpen, CreditCard, FileEdit, Timer, UserX
 } from 'lucide-react';
 import axios from 'axios';
 import { useAuthStore } from '../../store/authStore';
