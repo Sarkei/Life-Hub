@@ -61,8 +61,24 @@ public class SidebarController {
                 case "news" -> config.setNews(value);
                 case "projects" -> config.setProjects(value);
                 
-                // School
+                // School - Main
                 case "school" -> config.setSchool(value);
+                
+                // School - Detailed Features
+                case "schoolNotes" -> config.setSchoolNotes(value);
+                case "schoolTimetable" -> config.setSchoolTimetable(value);
+                case "schoolHomework" -> config.setSchoolHomework(value);
+                case "schoolExams" -> config.setSchoolExams(value);
+                case "schoolGrades" -> config.setSchoolGrades(value);
+                case "schoolMaterials" -> config.setSchoolMaterials(value);
+                case "schoolSubmissions" -> config.setSchoolSubmissions(value);
+                case "schoolProjects" -> config.setSchoolProjects(value);
+                case "schoolFlashcards" -> config.setSchoolFlashcards(value);
+                case "schoolSummaries" -> config.setSchoolSummaries(value);
+                case "schoolStudySessions" -> config.setSchoolStudySessions(value);
+                case "schoolAbsences" -> config.setSchoolAbsences(value);
+                
+                // Other
                 case "grades" -> config.setGrades(value);
                 case "habits" -> config.setHabits(value);
                 case "budget" -> config.setBudget(value);
@@ -100,6 +116,21 @@ public class SidebarController {
         config.setNews(false);
         config.setProjects(false);
         config.setSchool(true);
+        
+        // School Features
+        config.setSchoolNotes(true);
+        config.setSchoolTimetable(true);
+        config.setSchoolHomework(true);
+        config.setSchoolExams(true);
+        config.setSchoolGrades(true);
+        config.setSchoolMaterials(false);
+        config.setSchoolSubmissions(true);
+        config.setSchoolProjects(false);
+        config.setSchoolFlashcards(false);
+        config.setSchoolSummaries(false);
+        config.setSchoolStudySessions(true);
+        config.setSchoolAbsences(true);
+        
         config.setGrades(false);
         config.setHabits(false);
         config.setBudget(false);
@@ -132,6 +163,18 @@ public class SidebarController {
                 .news(false)
                 .projects(false)
                 .school(true)
+                .schoolNotes(true)
+                .schoolTimetable(true)
+                .schoolHomework(true)
+                .schoolExams(true)
+                .schoolGrades(true)
+                .schoolMaterials(false)
+                .schoolSubmissions(true)
+                .schoolProjects(false)
+                .schoolFlashcards(false)
+                .schoolSummaries(false)
+                .schoolStudySessions(true)
+                .schoolAbsences(true)
                 .grades(false)
                 .habits(false)
                 .budget(false)
@@ -161,6 +204,18 @@ public class SidebarController {
                 .news(config.getNews())
                 .projects(config.getProjects())
                 .school(config.getSchool())
+                .schoolNotes(config.getSchoolNotes())
+                .schoolTimetable(config.getSchoolTimetable())
+                .schoolHomework(config.getSchoolHomework())
+                .schoolExams(config.getSchoolExams())
+                .schoolGrades(config.getSchoolGrades())
+                .schoolMaterials(config.getSchoolMaterials())
+                .schoolSubmissions(config.getSchoolSubmissions())
+                .schoolProjects(config.getSchoolProjects())
+                .schoolFlashcards(config.getSchoolFlashcards())
+                .schoolSummaries(config.getSchoolSummaries())
+                .schoolStudySessions(config.getSchoolStudySessions())
+                .schoolAbsences(config.getSchoolAbsences())
                 .grades(config.getGrades())
                 .habits(config.getHabits())
                 .budget(config.getBudget())

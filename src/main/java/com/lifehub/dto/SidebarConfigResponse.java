@@ -36,8 +36,24 @@ public class SidebarConfigResponse {
     private Boolean news;
     private Boolean projects;
 
-    // School Items
+    // School Items - Main
     private Boolean school;
+    
+    // School Items - Detailed
+    private Boolean schoolNotes;
+    private Boolean schoolTimetable;
+    private Boolean schoolHomework;
+    private Boolean schoolExams;
+    private Boolean schoolGrades;
+    private Boolean schoolMaterials;
+    private Boolean schoolSubmissions;
+    private Boolean schoolProjects;
+    private Boolean schoolFlashcards;
+    private Boolean schoolSummaries;
+    private Boolean schoolStudySessions;
+    private Boolean schoolAbsences;
+    
+    // Other Items
     private Boolean grades;
     private Boolean habits;
     private Boolean budget;
