@@ -33,12 +33,16 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
+      console.log('Attempting login with:', formData.username)
       const data = await loginMutation.mutateAsync(formData)
+      console.log('Login successful, received data:', data)
       setAuth(data.token, data.userId, data.username, data.email)
+      console.log('Auth set, navigating to /')
       navigate('/')
-    } catch (error) {
-      // Error wird bereits von useMutation verwaltet
+    } catch (error: any) {
       console.error('Login failed:', error)
+      console.error('Error response:', error.response?.data)
+      console.error('Error status:', error.response?.status)
     }
   }
 
