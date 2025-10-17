@@ -49,6 +49,7 @@ public class TimetableEntry {
     private String notes;
     
     @Column(length = 7)
+    @Builder.Default
     private String color = "#3B82F6";
     
     @Column(name = "valid_from")

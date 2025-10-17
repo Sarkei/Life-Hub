@@ -39,6 +39,7 @@ public class SchoolSubject {
     private String room;
     
     @Column(length = 7)
+    @Builder.Default
     private String color = "#3B82F6";
     
     @Column(length = 50)
@@ -51,6 +52,7 @@ public class SchoolSubject {
     private Integer creditPoints;
     
     @Column
+    @Builder.Default
     private Boolean active = true;
     
     @Column(length = 20)

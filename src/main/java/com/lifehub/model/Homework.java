@@ -45,13 +45,16 @@ public class Homework {
     
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
+    @Builder.Default
     private HomeworkStatus status = HomeworkStatus.PENDING;
     
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
+    @Builder.Default
     private Priority priority = Priority.MEDIUM;
     
     @Column
+    @Builder.Default
     private Boolean completed = false;
     
     @Column(name = "completed_at")

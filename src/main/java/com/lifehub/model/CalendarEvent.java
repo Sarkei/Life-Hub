@@ -46,6 +46,7 @@ public class CalendarEvent {
     private LocalTime endTime;
 
     @Column(name = "all_day", nullable = false)
+    @Builder.Default
     private Boolean allDay = false;
 
     @Column(nullable = false, length = 50)
@@ -55,8 +56,10 @@ public class CalendarEvent {
     private String eventType;
 
     @Column(length = 7)
+    @Builder.Default
     private String color = "#3B82F6";
 
+    @Builder.Default
     private Boolean recurring = false;
 
     @Column(name = "recurrence_rule")
@@ -67,6 +70,7 @@ public class CalendarEvent {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
+    @Builder.Default
     private EventStatus status = EventStatus.CONFIRMED;
 
     @Column(name = "related_entity_type", length = 50)

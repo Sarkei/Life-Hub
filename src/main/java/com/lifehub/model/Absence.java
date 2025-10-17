@@ -32,18 +32,23 @@ public class Absence {
     
     @Enumerated(EnumType.STRING)
     @Column(name = "absence_type", length = 20)
+    @Builder.Default
     private AbsenceType absenceType = AbsenceType.SICK;
     
     @Column
+    @Builder.Default
     private Integer periods = 1;
     
     @Column(name = "all_day")
+    @Builder.Default
     private Boolean allDay = false;
     
     @Column
+    @Builder.Default
     private Boolean excused = false;
     
     @Column(name = "excuse_note_submitted")
+    @Builder.Default
     private Boolean excuseNoteSubmitted = false;
     
     @Column(columnDefinition = "TEXT")

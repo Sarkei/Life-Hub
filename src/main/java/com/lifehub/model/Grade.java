@@ -47,6 +47,7 @@ public class Grade {
     private BigDecimal percentage;
     
     @Column(precision = 3, scale = 2)
+    @Builder.Default
     private BigDecimal weight = BigDecimal.ONE;
     
     @Column(name = "received_date", nullable = false)

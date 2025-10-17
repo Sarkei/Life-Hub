@@ -67,6 +67,7 @@ public class Exam {
     private Integer maxPoints;
     
     @Column(name = "study_time_minutes")
+    @Builder.Default
     private Integer studyTimeMinutes = 0;
     
     @Column(name = "confidence_level")

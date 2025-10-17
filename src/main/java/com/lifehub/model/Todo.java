@@ -35,13 +35,16 @@ public class Todo {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
+    @Builder.Default
     private Priority priority = Priority.MEDIUM;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
+    @Builder.Default
     private Status status = Status.TODO;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean completed = false;
 
     @Column(name = "due_date")

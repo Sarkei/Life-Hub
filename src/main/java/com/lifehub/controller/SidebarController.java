@@ -36,52 +36,55 @@ public class SidebarController {
         updates.forEach((key, value) -> {
             switch (key) {
                 // General
-                case "dashboard" -> config.setDashboard(value);
-                case "todos" -> config.setTodos(value);
-                case "calendar" -> config.setCalendar(value);
-                case "contacts" -> config.setContacts(value);
+                case "showDashboard" -> config.setShowDashboard(value);
+                case "showTodos" -> config.setShowTodos(value);
+                case "showCalendar" -> config.setShowCalendar(value);
+                case "showContacts" -> config.setShowContacts(value);
+                case "showProfile" -> config.setShowProfile(value);
                 
                 // Private
-                case "fitness" -> config.setFitness(value);
-                case "weight" -> config.setWeight(value);
-                case "nutrition" -> config.setNutrition(value);
-                case "goals" -> config.setGoals(value);
-                case "diary" -> config.setDiary(value);
-                case "shopping" -> config.setShopping(value);
-                case "health" -> config.setHealth(value);
-                case "travel" -> config.setTravel(value);
-                case "movies" -> config.setMovies(value);
-                case "music" -> config.setMusic(value);
-                case "photos" -> config.setPhotos(value);
-                case "quickNotes" -> config.setQuickNotes(value);
+                case "showFitness" -> config.setShowFitness(value);
+                case "showWeight" -> config.setShowWeight(value);
+                case "showNutrition" -> config.setShowNutrition(value);
+                case "showGoals" -> config.setShowGoals(value);
+                case "showDiary" -> config.setShowDiary(value);
+                case "showShopping" -> config.setShowShopping(value);
+                case "showHealth" -> config.setShowHealth(value);
+                case "showTravel" -> config.setShowTravel(value);
+                case "showMovies" -> config.setShowMovies(value);
+                case "showMusic" -> config.setShowMusic(value);
+                case "showPhotos" -> config.setShowPhotos(value);
+                case "showQuickNotes" -> config.setShowQuickNotes(value);
+                case "showHabits" -> config.setShowHabits(value);
+                case "showBudget" -> config.setShowBudget(value);
                 
                 // Work
-                case "timeTracking" -> config.setTimeTracking(value);
-                case "statistics" -> config.setStatistics(value);
-                case "news" -> config.setNews(value);
-                case "projects" -> config.setProjects(value);
+                case "showTimeTracking" -> config.setShowTimeTracking(value);
+                case "showStatistics" -> config.setShowStatistics(value);
+                case "showNews" -> config.setShowNews(value);
+                case "showProjects" -> config.setShowProjects(value);
                 
                 // School - Main
-                case "school" -> config.setSchool(value);
+                case "showSchool" -> config.setShowSchool(value);
+                case "showSchoolOverview" -> config.setShowSchoolOverview(value);
+                case "showSchoolSubjects" -> config.setShowSchoolSubjects(value);
                 
                 // School - Detailed Features
-                case "schoolNotes" -> config.setSchoolNotes(value);
-                case "schoolTimetable" -> config.setSchoolTimetable(value);
-                case "schoolHomework" -> config.setSchoolHomework(value);
-                case "schoolExams" -> config.setSchoolExams(value);
-                case "schoolGrades" -> config.setSchoolGrades(value);
-                case "schoolMaterials" -> config.setSchoolMaterials(value);
-                case "schoolSubmissions" -> config.setSchoolSubmissions(value);
-                case "schoolProjects" -> config.setSchoolProjects(value);
-                case "schoolFlashcards" -> config.setSchoolFlashcards(value);
-                case "schoolSummaries" -> config.setSchoolSummaries(value);
-                case "schoolStudySessions" -> config.setSchoolStudySessions(value);
-                case "schoolAbsences" -> config.setSchoolAbsences(value);
+                case "showSchoolNotes" -> config.setShowSchoolNotes(value);
+                case "showSchoolTimetable" -> config.setShowSchoolTimetable(value);
+                case "showSchoolHomework" -> config.setShowSchoolHomework(value);
+                case "showSchoolExams" -> config.setShowSchoolExams(value);
+                case "showSchoolGrades" -> config.setShowSchoolGrades(value);
+                case "showSchoolMaterials" -> config.setShowSchoolMaterials(value);
+                case "showSchoolSubmissions" -> config.setShowSchoolSubmissions(value);
+                case "showSchoolProjects" -> config.setShowSchoolProjects(value);
+                case "showSchoolFlashcards" -> config.setShowSchoolFlashcards(value);
+                case "showSchoolSummaries" -> config.setShowSchoolSummaries(value);
+                case "showSchoolStudySessions" -> config.setShowSchoolStudySessions(value);
+                case "showSchoolAbsences" -> config.setShowSchoolAbsences(value);
                 
-                // Other
-                case "grades" -> config.setGrades(value);
-                case "habits" -> config.setHabits(value);
-                case "budget" -> config.setBudget(value);
+                // State
+                case "isCollapsed" -> config.setIsCollapsed(value);
             }
         });
 
@@ -95,45 +98,54 @@ public class SidebarController {
                 .orElseGet(() -> SidebarConfig.builder().userId(userId).build());
 
         // Setze alle auf Default-Werte
-        config.setDashboard(true);
-        config.setTodos(true);
-        config.setCalendar(true);
-        config.setContacts(false);
-        config.setFitness(true);
-        config.setWeight(true);
-        config.setNutrition(true);
-        config.setGoals(false);
-        config.setDiary(false);
-        config.setShopping(false);
-        config.setHealth(false);
-        config.setTravel(false);
-        config.setMovies(false);
-        config.setMusic(false);
-        config.setPhotos(false);
-        config.setQuickNotes(false);
-        config.setTimeTracking(false);
-        config.setStatistics(false);
-        config.setNews(false);
-        config.setProjects(false);
-        config.setSchool(true);
+        // General
+        config.setShowDashboard(true);
+        config.setShowTodos(true);
+        config.setShowCalendar(true);
+        config.setShowContacts(false);
+        config.setShowProfile(false);
         
-        // School Features
-        config.setSchoolNotes(true);
-        config.setSchoolTimetable(true);
-        config.setSchoolHomework(true);
-        config.setSchoolExams(true);
-        config.setSchoolGrades(true);
-        config.setSchoolMaterials(false);
-        config.setSchoolSubmissions(true);
-        config.setSchoolProjects(false);
-        config.setSchoolFlashcards(false);
-        config.setSchoolSummaries(false);
-        config.setSchoolStudySessions(true);
-        config.setSchoolAbsences(true);
+        // Private
+        config.setShowFitness(true);
+        config.setShowWeight(true);
+        config.setShowNutrition(true);
+        config.setShowGoals(false);
+        config.setShowDiary(false);
+        config.setShowShopping(false);
+        config.setShowHealth(false);
+        config.setShowTravel(false);
+        config.setShowMovies(false);
+        config.setShowMusic(false);
+        config.setShowPhotos(false);
+        config.setShowQuickNotes(false);
+        config.setShowHabits(false);
+        config.setShowBudget(false);
         
-        config.setGrades(false);
-        config.setHabits(false);
-        config.setBudget(false);
+        // Work
+        config.setShowTimeTracking(false);
+        config.setShowStatistics(false);
+        config.setShowNews(false);
+        config.setShowProjects(false);
+        
+        // School
+        config.setShowSchool(true);
+        config.setShowSchoolOverview(true);
+        config.setShowSchoolSubjects(true);
+        config.setShowSchoolNotes(true);
+        config.setShowSchoolTimetable(true);
+        config.setShowSchoolHomework(true);
+        config.setShowSchoolExams(true);
+        config.setShowSchoolGrades(true);
+        config.setShowSchoolMaterials(false);
+        config.setShowSchoolSubmissions(true);
+        config.setShowSchoolProjects(false);
+        config.setShowSchoolFlashcards(false);
+        config.setShowSchoolSummaries(false);
+        config.setShowSchoolStudySessions(true);
+        config.setShowSchoolAbsences(true);
+        
+        // State
+        config.setIsCollapsed(false);
 
         SidebarConfig savedConfig = sidebarConfigRepository.save(config);
         return ResponseEntity.ok(mapToResponse(savedConfig));
@@ -142,83 +154,89 @@ public class SidebarController {
     private SidebarConfig createDefaultConfig(Long userId) {
         return SidebarConfig.builder()
                 .userId(userId)
-                .dashboard(true)
-                .todos(true)
-                .calendar(true)
-                .contacts(false)
-                .fitness(true)
-                .weight(true)
-                .nutrition(true)
-                .goals(false)
-                .diary(false)
-                .shopping(false)
-                .health(false)
-                .travel(false)
-                .movies(false)
-                .music(false)
-                .photos(false)
-                .quickNotes(false)
-                .timeTracking(false)
-                .statistics(false)
-                .news(false)
-                .projects(false)
-                .school(true)
-                .schoolNotes(true)
-                .schoolTimetable(true)
-                .schoolHomework(true)
-                .schoolExams(true)
-                .schoolGrades(true)
-                .schoolMaterials(false)
-                .schoolSubmissions(true)
-                .schoolProjects(false)
-                .schoolFlashcards(false)
-                .schoolSummaries(false)
-                .schoolStudySessions(true)
-                .schoolAbsences(true)
-                .grades(false)
-                .habits(false)
-                .budget(false)
+                .showDashboard(true)
+                .showTodos(true)
+                .showCalendar(true)
+                .showContacts(false)
+                .showProfile(false)
+                .showFitness(true)
+                .showWeight(true)
+                .showNutrition(true)
+                .showGoals(false)
+                .showDiary(false)
+                .showShopping(false)
+                .showHealth(false)
+                .showTravel(false)
+                .showMovies(false)
+                .showMusic(false)
+                .showPhotos(false)
+                .showQuickNotes(false)
+                .showHabits(false)
+                .showBudget(false)
+                .showTimeTracking(false)
+                .showStatistics(false)
+                .showNews(false)
+                .showProjects(false)
+                .showSchool(true)
+                .showSchoolOverview(true)
+                .showSchoolSubjects(true)
+                .showSchoolNotes(true)
+                .showSchoolTimetable(true)
+                .showSchoolHomework(true)
+                .showSchoolExams(true)
+                .showSchoolGrades(true)
+                .showSchoolMaterials(false)
+                .showSchoolSubmissions(true)
+                .showSchoolProjects(false)
+                .showSchoolFlashcards(false)
+                .showSchoolSummaries(false)
+                .showSchoolStudySessions(true)
+                .showSchoolAbsences(true)
+                .isCollapsed(false)
                 .build();
     }
 
     private SidebarConfigResponse mapToResponse(SidebarConfig config) {
         return SidebarConfigResponse.builder()
-                .dashboard(config.getDashboard())
-                .todos(config.getTodos())
-                .calendar(config.getCalendar())
-                .contacts(config.getContacts())
-                .fitness(config.getFitness())
-                .weight(config.getWeight())
-                .nutrition(config.getNutrition())
-                .goals(config.getGoals())
-                .diary(config.getDiary())
-                .shopping(config.getShopping())
-                .health(config.getHealth())
-                .travel(config.getTravel())
-                .movies(config.getMovies())
-                .music(config.getMusic())
-                .photos(config.getPhotos())
-                .quickNotes(config.getQuickNotes())
-                .timeTracking(config.getTimeTracking())
-                .statistics(config.getStatistics())
-                .news(config.getNews())
-                .projects(config.getProjects())
-                .school(config.getSchool())
-                .schoolNotes(config.getSchoolNotes())
-                .schoolTimetable(config.getSchoolTimetable())
-                .schoolHomework(config.getSchoolHomework())
-                .schoolExams(config.getSchoolExams())
-                .schoolGrades(config.getSchoolGrades())
-                .schoolMaterials(config.getSchoolMaterials())
-                .schoolSubmissions(config.getSchoolSubmissions())
-                .schoolProjects(config.getSchoolProjects())
-                .schoolFlashcards(config.getSchoolFlashcards())
-                .schoolSummaries(config.getSchoolSummaries())
-                .schoolStudySessions(config.getSchoolStudySessions())
-                .schoolAbsences(config.getSchoolAbsences())
-                .grades(config.getGrades())
-                .habits(config.getHabits())
-                .budget(config.getBudget())
+                .showDashboard(config.getShowDashboard())
+                .showTodos(config.getShowTodos())
+                .showCalendar(config.getShowCalendar())
+                .showContacts(config.getShowContacts())
+                .showProfile(config.getShowProfile())
+                .showFitness(config.getShowFitness())
+                .showWeight(config.getShowWeight())
+                .showNutrition(config.getShowNutrition())
+                .showGoals(config.getShowGoals())
+                .showDiary(config.getShowDiary())
+                .showShopping(config.getShowShopping())
+                .showHealth(config.getShowHealth())
+                .showTravel(config.getShowTravel())
+                .showMovies(config.getShowMovies())
+                .showMusic(config.getShowMusic())
+                .showPhotos(config.getShowPhotos())
+                .showQuickNotes(config.getShowQuickNotes())
+                .showHabits(config.getShowHabits())
+                .showBudget(config.getShowBudget())
+                .showTimeTracking(config.getShowTimeTracking())
+                .showStatistics(config.getShowStatistics())
+                .showNews(config.getShowNews())
+                .showProjects(config.getShowProjects())
+                .showSchool(config.getShowSchool())
+                .showSchoolOverview(config.getShowSchoolOverview())
+                .showSchoolSubjects(config.getShowSchoolSubjects())
+                .showSchoolNotes(config.getShowSchoolNotes())
+                .showSchoolTimetable(config.getShowSchoolTimetable())
+                .showSchoolHomework(config.getShowSchoolHomework())
+                .showSchoolExams(config.getShowSchoolExams())
+                .showSchoolGrades(config.getShowSchoolGrades())
+                .showSchoolMaterials(config.getShowSchoolMaterials())
+                .showSchoolSubmissions(config.getShowSchoolSubmissions())
+                .showSchoolProjects(config.getShowSchoolProjects())
+                .showSchoolFlashcards(config.getShowSchoolFlashcards())
+                .showSchoolSummaries(config.getShowSchoolSummaries())
+                .showSchoolStudySessions(config.getShowSchoolStudySessions())
+                .showSchoolAbsences(config.getShowSchoolAbsences())
+                .isCollapsed(config.getIsCollapsed())
                 .build();
     }
 }

@@ -11,50 +11,53 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SidebarConfigResponse {
     // General Items
-    private Boolean dashboard;
-    private Boolean todos;
-    private Boolean calendar;
-    private Boolean contacts;
+    private Boolean showDashboard;
+    private Boolean showTodos;
+    private Boolean showCalendar;
+    private Boolean showContacts;
+    private Boolean showProfile;
 
     // Private Items
-    private Boolean fitness;
-    private Boolean weight;
-    private Boolean nutrition;
-    private Boolean goals;
-    private Boolean diary;
-    private Boolean shopping;
-    private Boolean health;
-    private Boolean travel;
-    private Boolean movies;
-    private Boolean music;
-    private Boolean photos;
-    private Boolean quickNotes;
+    private Boolean showFitness;
+    private Boolean showWeight;
+    private Boolean showNutrition;
+    private Boolean showGoals;
+    private Boolean showDiary;
+    private Boolean showShopping;
+    private Boolean showHealth;
+    private Boolean showTravel;
+    private Boolean showMovies;
+    private Boolean showMusic;
+    private Boolean showPhotos;
+    private Boolean showQuickNotes;
+    private Boolean showHabits;
+    private Boolean showBudget;
 
     // Work Items
-    private Boolean timeTracking;
-    private Boolean statistics;
-    private Boolean news;
-    private Boolean projects;
+    private Boolean showTimeTracking;
+    private Boolean showStatistics;
+    private Boolean showNews;
+    private Boolean showProjects;
 
     // School Items - Main
-    private Boolean school;
+    private Boolean showSchool;
+    private Boolean showSchoolOverview;
+    private Boolean showSchoolSubjects;
     
     // School Items - Detailed
-    private Boolean schoolNotes;
-    private Boolean schoolTimetable;
-    private Boolean schoolHomework;
-    private Boolean schoolExams;
-    private Boolean schoolGrades;
-    private Boolean schoolMaterials;
-    private Boolean schoolSubmissions;
-    private Boolean schoolProjects;
-    private Boolean schoolFlashcards;
-    private Boolean schoolSummaries;
-    private Boolean schoolStudySessions;
-    private Boolean schoolAbsences;
+    private Boolean showSchoolNotes;
+    private Boolean showSchoolTimetable;
+    private Boolean showSchoolHomework;
+    private Boolean showSchoolExams;
+    private Boolean showSchoolGrades;
+    private Boolean showSchoolMaterials;
+    private Boolean showSchoolSubmissions;
+    private Boolean showSchoolProjects;
+    private Boolean showSchoolFlashcards;
+    private Boolean showSchoolSummaries;
+    private Boolean showSchoolStudySessions;
+    private Boolean showSchoolAbsences;
     
-    // Other Items
-    private Boolean grades;
-    private Boolean habits;
-    private Boolean budget;
+    // State
+    private Boolean isCollapsed;
 }

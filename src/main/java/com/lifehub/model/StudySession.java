@@ -56,6 +56,7 @@ public class StudySession {
     private Integer focusLevel;
     
     @Column(name = "goal_achieved")
+    @Builder.Default
     private Boolean goalAchieved = false;
     
     @Column(name = "created_at")
