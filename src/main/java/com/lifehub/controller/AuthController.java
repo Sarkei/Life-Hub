@@ -5,15 +5,9 @@ import com.lifehub.dto.AuthResponse;
 import com.lifehub.dto.RegisterRequest;
 import com.lifehub.model.User;
 import com.lifehub.repository.UserRepository;
-import com.lifehub.security.JwtService;
 import com.lifehub.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,10 +16,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
     private final FileStorageService fileStorageService;
 
 
@@ -83,9 +73,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try {
-            System.out.println("=== LOGIN ATTEMPT ===");
+            System.out.println("=== SIMPLE LOGIN ===");
             System.out.println("Username: " + request.getUsername());
-            System.out.println("Password: " + request.getPassword());
             
             // Finde User in Datenbank
             User user = userRepository.findByUsername(request.getUsername())
@@ -97,37 +86,23 @@ public class AuthController {
             }
 
             System.out.println("User found: " + user.getUsername());
-            System.out.println("Stored password: " + user.getPassword());
             
-            // Prüfe Passwort (KLARTEXT-VERGLEICH - NUR FÜR DEBUGGING!)
+            // EINFACHER KLARTEXT-VERGLEICH
             if (!request.getPassword().equals(user.getPassword())) {
                 System.out.println("ERROR: Password mismatch");
-                System.out.println("Expected: " + user.getPassword());
-                System.out.println("Received: " + request.getPassword());
                 return ResponseEntity.status(401).body("Benutzername oder Passwort falsch");
             }
 
-            System.out.println("Password correct!");
-            
-            // Generiere JWT Token
-            UserDetails userDetails = org.springframework.security.core.userdetails.User
-                    .withUsername(user.getUsername())
-                    .password(user.getPassword())
-                    .authorities("USER")
-                    .build();
-            
-            String token = jwtService.generateToken(userDetails);
-            System.out.println("Token generated: " + token.substring(0, 20) + "...");
+            System.out.println("Login successful!");
 
-            // Erfolgreiche Antwort
+            // KEINE TOKENS - Einfache Response mit User-Daten
             AuthResponse response = AuthResponse.builder()
-                    .token(token)
+                    .token("simple-auth-" + user.getId()) // Dummy-Token nur für Kompatibilität
                     .username(user.getUsername())
                     .email(user.getEmail())
                     .userId(user.getId())
                     .build();
             
-            System.out.println("=== LOGIN SUCCESS ===");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             System.err.println("=== LOGIN ERROR ===");
