@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Apple, Target, TrendingUp, TrendingDown, Plus, Settings, Calendar } from 'lucide-react';
+import { useAuthStore } from '../../store/authStore';
 
 interface NutritionGoal {
   id?: number;
@@ -75,7 +76,7 @@ export default function NutritionPage() {
     notes: ''
   });
 
-  const userId = 1; // TODO: Get from auth context
+  const userId = useAuthStore.getState().userId || 1;
 
   useEffect(() => {
     loadGoal();

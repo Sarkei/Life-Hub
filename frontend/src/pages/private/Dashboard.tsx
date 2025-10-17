@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CheckCircle2, Calendar, Dumbbell, Weight, UtensilsCrossed, FileText, ArrowRight, Clock } from 'lucide-react'
 import axios from 'axios'
+import { api } from '../../api/endpoints'
+import { useAuthStore } from '../../store/authStore'
 
 interface Todo {
   id: number
@@ -40,8 +42,11 @@ export default function PrivateDashboard() {
 
   const loadDashboardData = async () => {
     try {
+      // Get userId from auth store
+      const userId = useAuthStore.getState().user?.id || 1
+      
       // Load dashboard data from new unified endpoint
-      const dashboardResponse = await axios.get('http://localhost:5000/api/dashboard/1')
+      const dashboardResponse = await axios.get(api.dashboard.getData(userId))
       const data = dashboardResponse.data
 
       // Set upcoming events (max 5 for display)

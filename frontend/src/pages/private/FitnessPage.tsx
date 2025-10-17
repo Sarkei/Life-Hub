@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Plus, Play, Edit2, Trash2, Check, X, Target, Calendar, Dumbbell, Clock, Flame, ChevronDown, ChevronUp } from 'lucide-react'
 import axios from 'axios'
+import { api } from '../../api/endpoints'
+import { useAuthStore } from '../../store/authStore'
 
 interface TrainingPlan {
   id: number
@@ -114,9 +116,8 @@ export default function FitnessPage() {
 
   const loadTrainingPlans = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/training/plans', {
-        params: { userId: 1 }
-      })
+      const userId = useAuthStore.getState().userId || 1
+      const response = await axios.get(api.training.getPlans(userId))
       setTrainingPlans(response.data)
     } catch (error) {
       console.error('Error loading training plans:', error)
@@ -125,9 +126,8 @@ export default function FitnessPage() {
 
   const loadActivePlan = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/training/plans/active', {
-        params: { userId: 1 }
-      })
+      const userId = useAuthStore.getState().userId || 1
+      const response = await axios.get(api.training.getActivePlan(userId))
       setActivePlan(response.data)
       setSelectedPlan(response.data)
     } catch (error) {
@@ -156,8 +156,9 @@ export default function FitnessPage() {
 
   const handleCreatePlan = async () => {
     try {
-      await axios.post('http://localhost:5000/api/training/plans', {
-        userId: 1,
+      const userId = useAuthStore.getState().userId || 1
+      await axios.post(api.training.createPlan(), {
+        userId,
         ...planForm
       })
       loadTrainingPlans()

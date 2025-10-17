@@ -34,16 +34,24 @@ export default function Header() {
   return (
     <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h2 
-            className="text-xl font-semibold cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+        <div className="flex items-center gap-3">
+          <img 
+            src="/icon.ico" 
+            alt="Life Hub Logo" 
+            className="w-8 h-8 cursor-pointer"
             onClick={() => navigate('/dashboard')}
-          >
-            {currentProfile ? `${currentProfile.name}'s Bereich` : 'Life Hub'}
-          </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Eingeloggt als <span className="font-medium">{username || 'Unbekannt'}</span>
-          </p>
+          />
+          <div>
+            <h2 
+              className="text-xl font-semibold cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              onClick={() => navigate('/dashboard')}
+            >
+              {currentProfile ? `${currentProfile.name}'s Bereich` : 'Life Hub'}
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Eingeloggt als <span className="font-medium">{username || 'Unbekannt'}</span>
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center gap-4">

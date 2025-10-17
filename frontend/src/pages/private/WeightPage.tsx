@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Scale, Plus, Trash2, TrendingDown, TrendingUp, Minus, Calendar } from 'lucide-react';
+import { api } from '../../api/endpoints';
+import { useAuthStore } from '../../store/authStore';
 
 interface Weight {
   id: number;
@@ -38,7 +40,7 @@ export default function WeightPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const userId = 1; // TODO: Get from auth context
+  const userId = useAuthStore.getState().userId || 1;
 
   useEffect(() => {
     loadWeights();
@@ -48,7 +50,7 @@ export default function WeightPage() {
   const loadWeights = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/weight?userId=${userId}`);
+      const response = await axios.get(api.weight.getAll(userId));
       setWeights(response.data);
     } catch (error) {
       console.error('Error loading weights:', error);
@@ -60,10 +62,29 @@ export default function WeightPage() {
 
   const loadStats = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/weight/stats?userId=${userId}`);
-      setStats(response.data);
+      // TODO: Backend needs to implement /weight/{userId}/stats endpoint
+      // For now, calculate stats from loaded weights
+      if (weights.length > 0) {
+        const sorted = [...weights].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        const latestWeight = sorted[sorted.length - 1];
+        const oldestWeight = sorted[0];
+        
+        const calculatedStats: WeightStats = {
+          currentWeight: latestWeight.weight,
+          currentDate: latestWeight.date,
+          startWeight: oldestWeight.weight,
+          startDate: oldestWeight.date,
+          average: weights.reduce((sum, w) => sum + w.weight, 0) / weights.length,
+          min: Math.min(...weights.map(w => w.weight)),
+          max: Math.max(...weights.map(w => w.weight)),
+          totalEntries: weights.length,
+          totalChange: latestWeight.weight - oldestWeight.weight,
+        };
+        
+        setStats(calculatedStats);
+      }
     } catch (error) {
-      console.error('Error loading stats:', error);
+      console.error('Error calculating stats:', error);
     }
   };
 
@@ -78,8 +99,7 @@ export default function WeightPage() {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/weight', {
-        userId,
+      await axios.post(api.weight.create(userId), {
         date: newDate,
         weight: parseFloat(newWeight),
         notes: newNotes || null
@@ -111,7 +131,7 @@ export default function WeightPage() {
     }
 
     try {
-      await axios.delete(`http://localhost:5000/api/weight/${id}`);
+      await axios.delete(api.weight.delete(userId, id));
       setSuccess('Eintrag gelöscht');
       loadWeights();
       loadStats();

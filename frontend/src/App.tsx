@@ -89,14 +89,19 @@ function App() {
           <Route path="school/dashboard-old" element={<SchoolDashboard />} />
           <Route path="school/todos" element={<TodosPage />} />
           <Route path="school/calendar" element={<CalendarPage />} />
-          <Route path="school/notes" element={<NotesPage category="schule" />} />
+          <Route path="school/subjects" element={<div className="p-6"><h1 className="text-2xl font-bold">Fächer</h1><p className="mt-4 text-gray-600">Verwalte hier deine Schulfächer.</p></div>} />
+          <Route path="school/timetable" element={<div className="p-6"><h1 className="text-2xl font-bold">Stundenplan</h1><p className="mt-4 text-gray-600">Hier kannst du deinen Stundenplan anlegen und verwalten.</p></div>} />
+          <Route path="school/homework" element={<div className="p-6"><h1 className="text-2xl font-bold">Hausaufgaben</h1><p className="mt-4 text-gray-600">Verwalte hier deine Hausaufgaben mit Kanban-Board.</p></div>} />
+          <Route path="school/exams" element={<div className="p-6"><h1 className="text-2xl font-bold">Prüfungen</h1><p className="mt-4 text-gray-600">Plane und tracke deine Prüfungen hier.</p></div>} />
           <Route path="school/grades" element={<GradesPage />} />
-          <Route path="school/timetable" element={<div className="p-6"><h1 className="text-2xl font-bold">Stundenplan - In Entwicklung</h1><p className="mt-4">Hier kannst du deinen Stundenplan anlegen und verwalten.</p></div>} />
-          <Route path="school/homework" element={<div className="p-6"><h1 className="text-2xl font-bold">Hausaufgaben - In Entwicklung</h1><p className="mt-4">Verwalte hier deine Hausaufgaben mit Kanban-Board.</p></div>} />
-          <Route path="school/exams" element={<div className="p-6"><h1 className="text-2xl font-bold">Prüfungen - In Entwicklung</h1><p className="mt-4">Plane und tracke deine Prüfungen hier.</p></div>} />
-          <Route path="school/subjects" element={<div className="p-6"><h1 className="text-2xl font-bold">Fächer - In Entwicklung</h1><p className="mt-4">Verwalte hier deine Schulfächer.</p></div>} />
-          <Route path="school/study-sessions" element={<div className="p-6"><h1 className="text-2xl font-bold">Lernzeiten - In Entwicklung</h1><p className="mt-4">Tracke deine Lernzeiten mit Timer.</p></div>} />
-          <Route path="school/absences" element={<div className="p-6"><h1 className="text-2xl font-bold">Fehlzeiten - In Entwicklung</h1><p className="mt-4">Erfasse hier deine Fehlzeiten.</p></div>} />
+          <Route path="school/notes" element={<NotesPage category="schule" />} />
+          <Route path="school/materials" element={<div className="p-6"><h1 className="text-2xl font-bold">Materialien</h1><p className="mt-4 text-gray-600">Verwalte hier deine Unterrichtsmaterialien und Dateien.</p></div>} />
+          <Route path="school/submissions" element={<div className="p-6"><h1 className="text-2xl font-bold">Abgaben</h1><p className="mt-4 text-gray-600">Tracke hier deine Abgaben und Deadlines.</p></div>} />
+          <Route path="school/projects" element={<div className="p-6"><h1 className="text-2xl font-bold">Projekte</h1><p className="mt-4 text-gray-600">Verwalte hier deine Schulprojekte.</p></div>} />
+          <Route path="school/flashcards" element={<div className="p-6"><h1 className="text-2xl font-bold">Karteikarten</h1><p className="mt-4 text-gray-600">Erstelle und lerne mit digitalen Karteikarten.</p></div>} />
+          <Route path="school/summaries" element={<div className="p-6"><h1 className="text-2xl font-bold">Zusammenfassungen</h1><p className="mt-4 text-gray-600">Speichere hier deine Lernzusammenfassungen.</p></div>} />
+          <Route path="school/study-sessions" element={<div className="p-6"><h1 className="text-2xl font-bold">Lernsessions</h1><p className="mt-4 text-gray-600">Tracke deine Lernzeiten mit Timer und Statistiken.</p></div>} />
+          <Route path="school/absences" element={<div className="p-6"><h1 className="text-2xl font-bold">Fehlzeiten</h1><p className="mt-4 text-gray-600">Erfasse hier deine Fehlzeiten und Krankmeldungen.</p></div>} />
         </Route>
       </Routes>
     </BrowserRouter>

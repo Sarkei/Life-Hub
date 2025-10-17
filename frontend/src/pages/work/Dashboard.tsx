@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CheckCircle2, Calendar, FileText, ArrowRight, Clock, Briefcase } from 'lucide-react'
 import axios from 'axios'
+import { api } from '../../api/endpoints'
+import { useAuthStore } from '../../store/authStore'
 
 interface CalendarEvent {
   id: number
@@ -23,9 +25,12 @@ export default function WorkDashboard() {
 
   const loadWorkData = async () => {
     try {
+      // Get userId from auth store
+      const userId = useAuthStore.getState().userId || 1
+      
       // Load work events (next 7 days)
-      const eventsResponse = await axios.get('http://localhost:5000/api/calendar/events/upcoming', {
-        params: { userId: 1, days: 7 }
+      const eventsResponse = await axios.get(api.events.getUpcoming(userId), {
+        params: { days: 7 }
       })
       // Filter for work events
       const workEvents = eventsResponse.data.filter((e: CalendarEvent & { category: string }) => e.category === 'arbeit')

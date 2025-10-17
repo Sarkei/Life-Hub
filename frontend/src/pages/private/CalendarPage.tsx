@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Plus, X, Clock, MapPin, Edit2, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import axios from 'axios'
+import { api } from '../../api/endpoints'
+import { useAuthStore } from '../../store/authStore'
 
 interface CalendarEvent {
   id?: number
@@ -48,14 +50,14 @@ export default function CalendarPage() {
 
   const loadEvents = async () => {
     try {
+      const userId = useAuthStore.getState().userId || 1
       const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
       const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59)
       
-      const response = await axios.get('http://localhost:5000/api/calendar/events', {
+      const response = await axios.get(api.events.getRange(userId), {
         params: {
-          userId: 1, // TODO: Get from auth
-          start: startOfMonth.toISOString(),
-          end: endOfMonth.toISOString()
+          startDate: startOfMonth.toISOString().split('T')[0],
+          endDate: endOfMonth.toISOString().split('T')[0]
         }
       })
       setEvents(response.data)
@@ -153,27 +155,30 @@ export default function CalendarPage() {
     }
 
     try {
+      const userId = useAuthStore.getState().userId || 1
+      
       // Ensure proper DateTime format for backend
       const eventData = {
         ...formData,
+        userId,
         startTime: formData.startTime.includes('T') ? formData.startTime : `${formData.startTime}T00:00`,
         endTime: formData.endTime.includes('T') ? formData.endTime : `${formData.endTime}T23:59`
       }
 
       if (selectedEvent?.id) {
         // Update
-        await axios.put(`http://localhost:5000/api/calendar/events/${selectedEvent.id}`, eventData)
+        await axios.put(api.events.update(userId, selectedEvent.id), eventData)
         alert('Termin erfolgreich aktualisiert!')
       } else {
         // Create
-        await axios.post('http://localhost:5000/api/calendar/events', eventData)
+        await axios.post(api.events.create(userId), eventData)
         alert('Termin erfolgreich erstellt!')
       }
       
       setShowModal(false)
       setSelectedEvent(null)
       setFormData({
-        userId: 1,
+        userId,
         title: '',
         description: '',
         startTime: '',
@@ -200,7 +205,8 @@ export default function CalendarPage() {
   const handleDelete = async (id: number) => {
     if (window.confirm('Termin wirklich löschen?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/calendar/events/${id}`)
+        const userId = useAuthStore.getState().userId || 1
+        await axios.delete(api.events.delete(userId, id))
         setShowEventDetails(false)
         loadEvents()
       } catch (error) {
