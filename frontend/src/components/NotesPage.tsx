@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
 import { 
   FolderPlus, 
   FilePlus, 
@@ -10,7 +9,6 @@ import {
   Folder, 
   FileText,
   Trash2,
-  Edit2,
   Save,
   Eye,
   Code,
@@ -25,8 +23,7 @@ import {
   Quote
 } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import type { Components } from 'react-markdown'
 
 interface TreeNode {
   id: number
@@ -45,7 +42,6 @@ export default function NotesPage({ category }: NotesPageProps) {
   const [tree, setTree] = useState<TreeNode[]>([])
   const [selectedNode, setSelectedNode] = useState<TreeNode | null>(null)
   const [content, setContent] = useState('')
-  const [isEditMode, setIsEditMode] = useState(true)
   const [showPreview, setShowPreview] = useState(false)
   const [expandedFolders, setExpandedFolders] = useState<Set<number>>(new Set())
   const [showNewFolderModal, setShowNewFolderModal] = useState(false)
@@ -478,21 +474,17 @@ export default function NotesPage({ category }: NotesPageProps) {
                 <div className="h-full overflow-y-auto p-6 prose dark:prose-invert max-w-none">
                   <ReactMarkdown
                     components={{
-                      code({ node, inline, className, children, ...props }) {
+                      code({ className, children, ...props }) {
                         const match = /language-(\w+)/.exec(className || '')
-                        return !inline && match ? (
-                          <SyntaxHighlighter
-                            style={vscDarkPlus as any}
-                            language={match[1]}
-                            PreTag="div"
-                            {...props}
-                          >
-                            {String(children).replace(/\n$/, '')}
-                          </SyntaxHighlighter>
-                        ) : (
+                        const isInline = !match
+                        return isInline ? (
                           <code className={className} {...props}>
                             {children}
                           </code>
+                        ) : (
+                          <pre className={className}>
+                            <code {...props}>{children}</code>
+                          </pre>
                         )
                       }
                     }}

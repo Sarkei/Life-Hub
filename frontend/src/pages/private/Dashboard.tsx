@@ -33,7 +33,6 @@ export default function PrivateDashboard() {
   const navigate = useNavigate()
   const [upcomingEvents, setUpcomingEvents] = useState<CalendarEvent[]>([])
   const [recentTodos, setRecentTodos] = useState<Todo[]>([])
-  const [recentWorkouts, setRecentWorkouts] = useState<Workout[]>([])
   const [stats, setStats] = useState({
     totalTodos: 0,
     activeTodos: 0,
@@ -63,14 +62,6 @@ export default function PrivateDashboard() {
         { id: 3, title: 'Steuererklärung vorbereiten', completed: false, priority: 'high', dueDate: '2025-10-20' }
       ]
       setRecentTodos(mockTodos)
-
-      // Load recent workouts
-      // TODO: Add API endpoint for workouts
-      const mockWorkouts = [
-        { id: 1, date: '2025-10-16', type: 'Strength', duration: 60, calories: 450 },
-        { id: 2, date: '2025-10-15', type: 'Cardio', duration: 30, calories: 300 }
-      ]
-      setRecentWorkouts(mockWorkouts)
 
       // Calculate stats
       setStats({

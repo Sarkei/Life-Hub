@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Calendar, Plus, X, Clock, MapPin, Edit2, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Plus, X, Clock, MapPin, Edit2, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import axios from 'axios'
 
 interface CalendarEvent {
@@ -18,7 +18,6 @@ interface CalendarEvent {
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [events, setEvents] = useState<CalendarEvent[]>([])
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [showEventDetails, setShowEventDetails] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
