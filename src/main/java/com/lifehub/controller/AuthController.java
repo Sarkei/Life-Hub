@@ -81,23 +81,41 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+        try {
+            // Finde User in Datenbank
+            User user = userRepository.findByUsername(request.getUsername())
+                    .orElse(null);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-        User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
-        String token = jwtService.generateToken(userDetails);
+            if (user == null) {
+                return ResponseEntity.status(401).body("Benutzername oder Passwort falsch");
+            }
 
-        return ResponseEntity.ok(AuthResponse.builder()
-                .token(token)
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .userId(user.getId())
-                .build());
+            // Prüfe Passwort
+            if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+                return ResponseEntity.status(401).body("Benutzername oder Passwort falsch");
+            }
+
+            // Generiere JWT Token
+            UserDetails userDetails = org.springframework.security.core.userdetails.User
+                    .withUsername(user.getUsername())
+                    .password(user.getPassword())
+                    .authorities("USER")
+                    .build();
+            
+            String token = jwtService.generateToken(userDetails);
+
+            // Erfolgreiche Antwort
+            return ResponseEntity.ok(AuthResponse.builder()
+                    .token(token)
+                    .username(user.getUsername())
+                    .email(user.getEmail())
+                    .userId(user.getId())
+                    .build());
+        } catch (Exception e) {
+            System.err.println("Login error: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Login fehlgeschlagen: " + e.getMessage());
+        }
     }
 }
