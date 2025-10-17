@@ -18,7 +18,6 @@ interface CalendarEvent {
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [events, setEvents] = useState<CalendarEvent[]>([])
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [showEventDetails, setShowEventDetails] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
@@ -127,7 +126,6 @@ export default function CalendarPage() {
   }
 
   const handleDateClick = (date: Date) => {
-    setSelectedDate(date)
     const dateStr = date.toISOString().split('T')[0]
     setFormData({
       ...formData,
@@ -206,7 +204,6 @@ export default function CalendarPage() {
         <h1 className="text-3xl font-bold">📅 Kalender</h1>
         <button
           onClick={() => {
-            setSelectedDate(new Date())
             setSelectedEvent(null)
             setFormData({
               userId: 1,
