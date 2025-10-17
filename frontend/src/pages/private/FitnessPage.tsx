@@ -345,10 +345,6 @@ export default function FitnessPage() {
     return daysOfWeek.find(d => d.value === day)?.label || day
   }
 
-  const getDayShort = (day: string) => {
-    return daysOfWeek.find(d => d.value === day)?.short || day.substring(0, 2)
-  }
-
   const workoutsByDay = daysOfWeek.map(day => ({
     ...day,
     workouts: workouts.filter(w => w.dayOfWeek === day.value)

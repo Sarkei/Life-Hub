@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Apple, Target, TrendingUp, TrendingDown, Plus, Settings, Calendar, Flame } from 'lucide-react';
+import { Apple, Target, TrendingUp, TrendingDown, Plus, Settings, Calendar } from 'lucide-react';
 
 interface NutritionGoal {
   id?: number;
@@ -50,13 +50,20 @@ export default function NutritionPage() {
   const [success, setSuccess] = useState('');
 
   // Goal form state
-  const [goalForm, setGoalForm] = useState({
+  const [goalForm, setGoalForm] = useState<{
+    currentWeight: string;
+    height: string;
+    age: string;
+    gender: 'MALE' | 'FEMALE' | 'OTHER';
+    activityLevel: 'SEDENTARY' | 'LIGHT' | 'MODERATE' | 'VERY_ACTIVE' | 'EXTREMELY_ACTIVE';
+    goalType: 'LOSE_WEIGHT' | 'MAINTAIN' | 'GAIN_WEIGHT';
+  }>({
     currentWeight: '',
     height: '',
     age: '',
-    gender: 'MALE' as const,
-    activityLevel: 'MODERATE' as const,
-    goalType: 'MAINTAIN' as const
+    gender: 'MALE',
+    activityLevel: 'MODERATE',
+    goalType: 'MAINTAIN'
   });
 
   // Daily nutrition form state

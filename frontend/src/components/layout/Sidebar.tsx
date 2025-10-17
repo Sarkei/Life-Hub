@@ -5,7 +5,7 @@ import {
   Users, Target, BookOpen, ShoppingCart, HeartPulse, Plane, Film, 
   Music, Image, StickyNote, Clock, BarChart3, Newspaper, Trophy,
   Wallet, Briefcase, FolderKanban, GraduationCap, BookMarked,
-  ChevronLeft, ChevronRight, Settings, ChevronDown, Home, Menu, X
+  ChevronLeft, ChevronRight, Settings, ChevronDown, Home, X
 } from 'lucide-react';
 
 interface SidebarItem {
