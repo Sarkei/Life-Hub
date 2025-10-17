@@ -1,4 +1,8 @@
 import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
+import { authApi } from '../api'
+import { useAuthStore } from '../store/authStore'
 
 // Hilfskomponente für Passwort-Anforderung
 function PasswordRequirement({ label, valid }: { label: string; valid: boolean }) {
@@ -13,10 +17,6 @@ function PasswordRequirement({ label, valid }: { label: string; valid: boolean }
     </li>
   )
 }
-import { useNavigate, Link } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
-import { authApi } from '../api'
-import { useAuthStore } from '../store/authStore'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
@@ -78,7 +78,6 @@ export default function RegisterPage() {
             />
           </div>
 
-
           <div>
             <label className="block text-sm font-medium mb-2">Passwort</label>
             <input
@@ -111,20 +110,6 @@ export default function RegisterPage() {
               />
             </ul>
           </div>
-
-// Hilfskomponente für Passwort-Anforderung
-function PasswordRequirement({ label, valid }: { label: string; valid: boolean }) {
-  return (
-    <li className={valid ? 'text-green-600 flex items-center' : 'text-red-600 flex items-center'}>
-      {valid ? (
-        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-      ) : (
-        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-      )}
-      {label}
-    </li>
-  )
-}
 
           {registerMutation.isError && (
             <div className="text-red-600 text-sm text-center">
