@@ -13,6 +13,7 @@ import MealsPage from './pages/private/MealsPage'
 import WorkDashboard from './pages/work/Dashboard'
 import SchoolDashboard from './pages/school/Dashboard'
 import ProfilesPage from './pages/ProfilesPage'
+import SettingsPage from './pages/SettingsPage'
 
 function App() {
   const { token } = useAuthStore()
@@ -32,6 +33,7 @@ function App() {
         <Route path="/" element={<DashboardLayout />}>
           <Route index element={<Navigate to="/private" replace />} />
           <Route path="profiles" element={<ProfilesPage />} />
+          <Route path="settings" element={<SettingsPage />} />
           
           {/* Private Area */}
           <Route path="private" element={<PrivateDashboard />} />

@@ -1,10 +1,12 @@
 import { Moon, Sun, LogOut, Settings } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useProfileStore } from '../../store/profileStore'
 
 export default function Header() {
   const [darkMode, setDarkMode] = useState(true)
+  const navigate = useNavigate()
   const { username, logout } = useAuthStore()
   const { currentProfile } = useProfileStore()
 
@@ -20,6 +22,15 @@ export default function Header() {
     setDarkMode(!darkMode)
   }
 
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
+
+  const handleSettings = () => {
+    navigate('/settings')
+  }
+
   return (
     <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -28,7 +39,7 @@ export default function Header() {
             {currentProfile ? `${currentProfile.name}'s Bereich` : 'Life Hub'}
           </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Eingeloggt als {username}
+            Eingeloggt als <span className="font-medium">{username || 'Unbekannt'}</span>
           </p>
         </div>
 
@@ -42,6 +53,7 @@ export default function Header() {
           </button>
 
           <button
+            onClick={handleSettings}
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             title="Einstellungen"
           >
@@ -49,8 +61,8 @@ export default function Header() {
           </button>
 
           <button
-            onClick={logout}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-red-600"
+            onClick={handleLogout}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-red-600 hover:text-red-700 dark:hover:text-red-500"
             title="Abmelden"
           >
             <LogOut size={20} />
