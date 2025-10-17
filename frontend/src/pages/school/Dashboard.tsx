@@ -24,7 +24,7 @@ export default function SchoolDashboard() {
   const loadSchoolData = async () => {
     try {
       // Load school events (next 7 days)
-      const eventsResponse = await axios.get('http://localhost:8080/api/calendar/events/upcoming', {
+      const eventsResponse = await axios.get('http://localhost:5000/api/calendar/events/upcoming', {
         params: { userId: 1, days: 7 }
       })
       // Filter for school events

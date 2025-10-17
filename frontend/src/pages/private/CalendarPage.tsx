@@ -51,7 +51,7 @@ export default function CalendarPage() {
       const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
       const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59)
       
-      const response = await axios.get('http://localhost:8080/api/calendar/events', {
+      const response = await axios.get('http://localhost:5000/api/calendar/events', {
         params: {
           userId: 1, // TODO: Get from auth
           start: startOfMonth.toISOString(),
@@ -70,7 +70,10 @@ export default function CalendarPage() {
     const firstDay = new Date(year, month, 1)
     const lastDay = new Date(year, month + 1, 0)
     const daysInMonth = lastDay.getDate()
-    const startingDayOfWeek = firstDay.getDay()
+    
+    // Montag als erster Tag (0=Sonntag -> 6, 1=Montag -> 0, ...)
+    let startingDayOfWeek = firstDay.getDay() - 1
+    if (startingDayOfWeek === -1) startingDayOfWeek = 6 // Sonntag wird zu 6
 
     const days = []
     
@@ -159,11 +162,11 @@ export default function CalendarPage() {
 
       if (selectedEvent?.id) {
         // Update
-        await axios.put(`http://localhost:8080/api/calendar/events/${selectedEvent.id}`, eventData)
+        await axios.put(`http://localhost:5000/api/calendar/events/${selectedEvent.id}`, eventData)
         alert('Termin erfolgreich aktualisiert!')
       } else {
         // Create
-        await axios.post('http://localhost:8080/api/calendar/events', eventData)
+        await axios.post('http://localhost:5000/api/calendar/events', eventData)
         alert('Termin erfolgreich erstellt!')
       }
       
@@ -197,7 +200,7 @@ export default function CalendarPage() {
   const handleDelete = async (id: number) => {
     if (window.confirm('Termin wirklich löschen?')) {
       try {
-        await axios.delete(`http://localhost:8080/api/calendar/events/${id}`)
+        await axios.delete(`http://localhost:5000/api/calendar/events/${id}`)
         setShowEventDetails(false)
         loadEvents()
       } catch (error) {
@@ -211,7 +214,7 @@ export default function CalendarPage() {
     'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'
   ]
 
-  const dayNames = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
+  const dayNames = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 
   const days = getDaysInMonth(currentDate)
 

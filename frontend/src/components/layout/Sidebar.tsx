@@ -51,6 +51,7 @@ const defaultSidebarItems: SidebarItem[] = [
   { id: 'projects', label: 'Projekte', icon: FolderKanban, path: '/work/projects', category: 'work', enabled: false, isNew: true },
   
   // School
+  { id: 'school', label: 'Schule', icon: GraduationCap, path: '/school', category: 'school', enabled: true },
   { id: 'grades', label: 'Noten', icon: BookMarked, path: '/school/grades', category: 'school', enabled: false, isNew: true },
 ];
 
@@ -80,7 +81,7 @@ export default function Sidebar() {
 
   const loadSidebarConfig = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/sidebar/${userId}`);
+      const response = await axios.get(`http://localhost:5000/api/sidebar/${userId}`);
       const config = response.data;
 
       // Mapping: Backend-Felder -> Frontend-Items
@@ -109,6 +110,7 @@ export default function Sidebar() {
           'budget': 'budget',
           'time-tracking-work': 'timeTracking',
           'projects': 'projects',
+          'school': 'school',
           'grades': 'grades',
         };
 
@@ -160,6 +162,7 @@ export default function Sidebar() {
           'budget': 'budget',
           'time-tracking-work': 'timeTracking',
           'projects': 'projects',
+          'school': 'school',
           'grades': 'grades',
         };
 
@@ -169,7 +172,7 @@ export default function Sidebar() {
         }
       });
 
-      await axios.post(`http://localhost:8080/api/sidebar/${userId}`, updates);
+      await axios.post(`http://localhost:5000/api/sidebar/${userId}`, updates);
     } catch (error) {
       console.error('Fehler beim Speichern der Sidebar-Konfiguration:', error);
     }
@@ -186,7 +189,7 @@ export default function Sidebar() {
     if (!userId) return;
 
     try {
-      const response = await axios.post(`http://localhost:8080/api/sidebar/${userId}/reset`);
+      const response = await axios.post(`http://localhost:5000/api/sidebar/${userId}/reset`);
       const config = response.data;
 
       // Aktualisiere Items mit Reset-Werten
@@ -215,6 +218,7 @@ export default function Sidebar() {
           'budget': 'budget',
           'time-tracking-work': 'timeTracking',
           'projects': 'projects',
+          'school': 'school',
           'grades': 'grades',
         };
 

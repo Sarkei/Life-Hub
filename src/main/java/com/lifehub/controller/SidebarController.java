@@ -62,6 +62,7 @@ public class SidebarController {
                 case "projects" -> config.setProjects(value);
                 
                 // School
+                case "school" -> config.setSchool(value);
                 case "grades" -> config.setGrades(value);
                 case "habits" -> config.setHabits(value);
                 case "budget" -> config.setBudget(value);
@@ -98,6 +99,7 @@ public class SidebarController {
         config.setStatistics(false);
         config.setNews(false);
         config.setProjects(false);
+        config.setSchool(true);
         config.setGrades(false);
         config.setHabits(false);
         config.setBudget(false);
@@ -129,6 +131,7 @@ public class SidebarController {
                 .statistics(false)
                 .news(false)
                 .projects(false)
+                .school(true)
                 .grades(false)
                 .habits(false)
                 .budget(false)
@@ -157,6 +160,7 @@ public class SidebarController {
                 .statistics(config.getStatistics())
                 .news(config.getNews())
                 .projects(config.getProjects())
+                .school(config.getSchool())
                 .grades(config.getGrades())
                 .habits(config.getHabits())
                 .budget(config.getBudget())

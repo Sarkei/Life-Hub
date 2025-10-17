@@ -29,7 +29,8 @@ CREATE TABLE sidebar_config (
     news BOOLEAN DEFAULT FALSE,
     projects BOOLEAN DEFAULT FALSE,
     
-    -- School Items
+    -- School Items (NEU Badge)
+    school BOOLEAN DEFAULT TRUE,
     grades BOOLEAN DEFAULT FALSE,
     habits BOOLEAN DEFAULT FALSE,
     budget BOOLEAN DEFAULT FALSE,

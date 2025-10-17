@@ -48,7 +48,7 @@ export default function WeightPage() {
   const loadWeights = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:8080/api/weight?userId=${userId}`);
+      const response = await axios.get(`http://localhost:5000/api/weight?userId=${userId}`);
       setWeights(response.data);
     } catch (error) {
       console.error('Error loading weights:', error);
@@ -60,7 +60,7 @@ export default function WeightPage() {
 
   const loadStats = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/weight/stats?userId=${userId}`);
+      const response = await axios.get(`http://localhost:5000/api/weight/stats?userId=${userId}`);
       setStats(response.data);
     } catch (error) {
       console.error('Error loading stats:', error);
@@ -78,7 +78,7 @@ export default function WeightPage() {
     }
 
     try {
-      await axios.post('http://localhost:8080/api/weight', {
+      await axios.post('http://localhost:5000/api/weight', {
         userId,
         date: newDate,
         weight: parseFloat(newWeight),
@@ -111,7 +111,7 @@ export default function WeightPage() {
     }
 
     try {
-      await axios.delete(`http://localhost:8080/api/weight/${id}`);
+      await axios.delete(`http://localhost:5000/api/weight/${id}`);
       setSuccess('Eintrag gelöscht');
       loadWeights();
       loadStats();

@@ -107,6 +107,10 @@ public class SidebarConfig {
     private Boolean projects = false;
 
     // School Items
+    @Column(name = "school")
+    @Builder.Default
+    private Boolean school = true;
+
     @Column(name = "grades")
     @Builder.Default
     private Boolean grades = false;

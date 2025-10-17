@@ -66,19 +66,19 @@ export const SchoolPage: React.FC = () => {
       const today = daysOfWeek[new Date().getDay()];
 
       // Load today's timetable
-      const timetableRes = await axios.get(`http://localhost:8080/api/timetable/${userId}/day/${today}`);
+      const timetableRes = await axios.get(`http://localhost:5000/api/timetable/${userId}/day/${today}`);
       setTodayLessons(timetableRes.data.slice(0, 5)); // Show max 5 lessons
 
       // Load upcoming exams (next 3)
-      const examsRes = await axios.get(`http://localhost:8080/api/exams/${userId}/upcoming`);
+      const examsRes = await axios.get(`http://localhost:5000/api/exams/${userId}/upcoming`);
       setUpcomingExams(examsRes.data.slice(0, 3));
 
       // Load open homework (max 5)
-      const homeworkRes = await axios.get(`http://localhost:8080/api/homework/${userId}/upcoming`);
+      const homeworkRes = await axios.get(`http://localhost:5000/api/homework/${userId}/upcoming`);
       setOpenHomework(homeworkRes.data.slice(0, 5));
 
       // Load grade statistics
-      const gradesRes = await axios.get(`http://localhost:8080/api/grades/${userId}/stats`);
+      const gradesRes = await axios.get(`http://localhost:5000/api/grades/${userId}/stats`);
       setGradeStats(gradesRes.data);
 
     } catch (error) {

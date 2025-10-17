@@ -114,7 +114,7 @@ export default function FitnessPage() {
 
   const loadTrainingPlans = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/training/plans', {
+      const response = await axios.get('http://localhost:5000/api/training/plans', {
         params: { userId: 1 }
       })
       setTrainingPlans(response.data)
@@ -125,7 +125,7 @@ export default function FitnessPage() {
 
   const loadActivePlan = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/training/plans/active', {
+      const response = await axios.get('http://localhost:5000/api/training/plans/active', {
         params: { userId: 1 }
       })
       setActivePlan(response.data)
@@ -138,7 +138,7 @@ export default function FitnessPage() {
 
   const loadWorkouts = async (planId: number) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/training/plans/${planId}/workouts`)
+      const response = await axios.get(`http://localhost:5000/api/training/plans/${planId}/workouts`)
       setWorkouts(response.data)
     } catch (error) {
       console.error('Error loading workouts:', error)
@@ -147,7 +147,7 @@ export default function FitnessPage() {
 
   const loadExercises = async (workoutId: number) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/training/workouts/${workoutId}/exercises`)
+      const response = await axios.get(`http://localhost:5000/api/training/workouts/${workoutId}/exercises`)
       setExercises(response.data)
     } catch (error) {
       console.error('Error loading exercises:', error)
@@ -156,7 +156,7 @@ export default function FitnessPage() {
 
   const handleCreatePlan = async () => {
     try {
-      await axios.post('http://localhost:8080/api/training/plans', {
+      await axios.post('http://localhost:5000/api/training/plans', {
         userId: 1,
         ...planForm
       })
@@ -173,7 +173,7 @@ export default function FitnessPage() {
   const handleUpdatePlan = async () => {
     if (!selectedPlan) return
     try {
-      await axios.put(`http://localhost:8080/api/training/plans/${selectedPlan.id}`, planForm)
+      await axios.put(`http://localhost:5000/api/training/plans/${selectedPlan.id}`, planForm)
       loadTrainingPlans()
       if (activePlan?.id === selectedPlan.id) loadActivePlan()
       setShowPlanModal(false)
@@ -187,7 +187,7 @@ export default function FitnessPage() {
 
   const handleActivatePlan = async (planId: number) => {
     try {
-      await axios.patch(`http://localhost:8080/api/training/plans/${planId}/activate`, null, {
+      await axios.patch(`http://localhost:5000/api/training/plans/${planId}/activate`, null, {
         params: { userId: 1 }
       })
       loadTrainingPlans()
@@ -202,7 +202,7 @@ export default function FitnessPage() {
   const handleDeletePlan = async (planId: number) => {
     if (!confirm('Trainingsplan wirklich löschen? Alle Workouts werden ebenfalls gelöscht.')) return
     try {
-      await axios.delete(`http://localhost:8080/api/training/plans/${planId}`)
+      await axios.delete(`http://localhost:5000/api/training/plans/${planId}`)
       loadTrainingPlans()
       if (activePlan?.id === planId) {
         setActivePlan(null)
@@ -218,7 +218,7 @@ export default function FitnessPage() {
   const handleCreateWorkout = async () => {
     if (!selectedPlan) return
     try {
-      await axios.post(`http://localhost:8080/api/training/plans/${selectedPlan.id}/workouts`, workoutForm)
+      await axios.post(`http://localhost:5000/api/training/plans/${selectedPlan.id}/workouts`, workoutForm)
       loadWorkouts(selectedPlan.id)
       setShowWorkoutModal(false)
       resetWorkoutForm()
@@ -232,7 +232,7 @@ export default function FitnessPage() {
   const handleUpdateWorkout = async () => {
     if (!selectedWorkout) return
     try {
-      await axios.put(`http://localhost:8080/api/training/workouts/${selectedWorkout.id}`, workoutForm)
+      await axios.put(`http://localhost:5000/api/training/workouts/${selectedWorkout.id}`, workoutForm)
       loadWorkouts(selectedWorkout.trainingPlanId)
       setShowWorkoutModal(false)
       resetWorkoutForm()
@@ -246,7 +246,7 @@ export default function FitnessPage() {
   const handleCompleteWorkout = async (workoutId: number) => {
     if (!confirm('Workout als absolviert markieren? Es wird in der Kalender-Kategorie "Fitness" gespeichert.')) return
     try {
-      await axios.patch(`http://localhost:8080/api/training/workouts/${workoutId}/complete`)
+      await axios.patch(`http://localhost:5000/api/training/workouts/${workoutId}/complete`)
       if (selectedPlan) loadWorkouts(selectedPlan.id)
       alert('Workout absolviert! 🎉 Es wurde im Kalender unter "Fitness" gespeichert.')
     } catch (error) {
@@ -258,7 +258,7 @@ export default function FitnessPage() {
   const handleDeleteWorkout = async (workoutId: number) => {
     if (!confirm('Workout wirklich löschen?')) return
     try {
-      await axios.delete(`http://localhost:8080/api/training/workouts/${workoutId}`)
+      await axios.delete(`http://localhost:5000/api/training/workouts/${workoutId}`)
       if (selectedPlan) loadWorkouts(selectedPlan.id)
       if (selectedWorkout?.id === workoutId) {
         setSelectedWorkout(null)
@@ -274,7 +274,7 @@ export default function FitnessPage() {
   const handleCreateExercise = async () => {
     if (!selectedWorkout) return
     try {
-      await axios.post(`http://localhost:8080/api/training/workouts/${selectedWorkout.id}/exercises`, {
+      await axios.post(`http://localhost:5000/api/training/workouts/${selectedWorkout.id}/exercises`, {
         ...exerciseForm,
         position: exercises.length
       })
@@ -290,7 +290,7 @@ export default function FitnessPage() {
   const handleDeleteExercise = async (exerciseId: number) => {
     if (!confirm('Übung wirklich löschen?')) return
     try {
-      await axios.delete(`http://localhost:8080/api/training/exercises/${exerciseId}`)
+      await axios.delete(`http://localhost:5000/api/training/exercises/${exerciseId}`)
       if (selectedWorkout) loadExercises(selectedWorkout.id)
     } catch (error) {
       console.error('Error deleting exercise:', error)

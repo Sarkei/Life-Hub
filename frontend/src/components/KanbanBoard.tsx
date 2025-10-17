@@ -91,7 +91,7 @@ export default function KanbanBoard({ category }: KanbanBoardProps) {
 
   const loadTodos = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/todos', {
+      const response = await axios.get('http://localhost:5000/api/todos', {
         params: { userId: 1, category: category, archived: false }
       })
       setTodos(response.data)
@@ -102,7 +102,7 @@ export default function KanbanBoard({ category }: KanbanBoardProps) {
 
   const loadStats = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/todos/stats', {
+      const response = await axios.get('http://localhost:5000/api/todos/stats', {
         params: { userId: 1 }
       })
       setStats(response.data)
@@ -113,7 +113,7 @@ export default function KanbanBoard({ category }: KanbanBoardProps) {
 
   const loadSubtasks = async (todoId: number) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/todos/${todoId}/subtasks`)
+      const response = await axios.get(`http://localhost:5000/api/todos/${todoId}/subtasks`)
       setSubtasks(response.data)
     } catch (error) {
       console.error('Error loading subtasks:', error)
@@ -122,7 +122,7 @@ export default function KanbanBoard({ category }: KanbanBoardProps) {
 
   const loadComments = async (todoId: number) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/todos/${todoId}/comments`)
+      const response = await axios.get(`http://localhost:5000/api/todos/${todoId}/comments`)
       setComments(response.data)
     } catch (error) {
       console.error('Error loading comments:', error)
@@ -154,9 +154,9 @@ export default function KanbanBoard({ category }: KanbanBoardProps) {
     e.preventDefault()
     try {
       if (selectedTodo?.id) {
-        await axios.put(`http://localhost:8080/api/todos/${selectedTodo.id}`, formData)
+        await axios.put(`http://localhost:5000/api/todos/${selectedTodo.id}`, formData)
       } else {
-        await axios.post('http://localhost:8080/api/todos', formData)
+        await axios.post('http://localhost:5000/api/todos', formData)
       }
       loadTodos()
       loadStats()
@@ -171,7 +171,7 @@ export default function KanbanBoard({ category }: KanbanBoardProps) {
     if (!confirm('Möchtest du dieses Todo wirklich löschen?')) return
     
     try {
-      await axios.delete(`http://localhost:8080/api/todos/${id}`)
+      await axios.delete(`http://localhost:5000/api/todos/${id}`)
       loadTodos()
       loadStats()
       setShowDetailModal(false)
@@ -182,7 +182,7 @@ export default function KanbanBoard({ category }: KanbanBoardProps) {
 
   const handleArchive = async (id: number) => {
     try {
-      await axios.patch(`http://localhost:8080/api/todos/${id}/archive`)
+      await axios.patch(`http://localhost:5000/api/todos/${id}/archive`)
       loadTodos()
       setShowDetailModal(false)
     } catch (error) {
@@ -202,7 +202,7 @@ export default function KanbanBoard({ category }: KanbanBoardProps) {
     if (!draggedTodo) return
 
     try {
-      await axios.patch(`http://localhost:8080/api/todos/${draggedTodo.id}/status`, {
+      await axios.patch(`http://localhost:5000/api/todos/${draggedTodo.id}/status`, {
         status: status
       })
       loadTodos()
@@ -217,7 +217,7 @@ export default function KanbanBoard({ category }: KanbanBoardProps) {
     if (!selectedTodo || !newSubtask.trim()) return
 
     try {
-      await axios.post(`http://localhost:8080/api/todos/${selectedTodo.id}/subtasks`, {
+      await axios.post(`http://localhost:5000/api/todos/${selectedTodo.id}/subtasks`, {
         title: newSubtask,
         completed: false,
         position: subtasks.length
@@ -231,7 +231,7 @@ export default function KanbanBoard({ category }: KanbanBoardProps) {
 
   const handleToggleSubtask = async (subtask: TodoSubtask) => {
     try {
-      await axios.put(`http://localhost:8080/api/todos/subtasks/${subtask.id}`, {
+      await axios.put(`http://localhost:5000/api/todos/subtasks/${subtask.id}`, {
         ...subtask,
         completed: !subtask.completed
       })
@@ -243,7 +243,7 @@ export default function KanbanBoard({ category }: KanbanBoardProps) {
 
   const handleDeleteSubtask = async (id: number) => {
     try {
-      await axios.delete(`http://localhost:8080/api/todos/subtasks/${id}`)
+      await axios.delete(`http://localhost:5000/api/todos/subtasks/${id}`)
       if (selectedTodo) loadSubtasks(selectedTodo.id)
     } catch (error) {
       console.error('Error deleting subtask:', error)
@@ -254,7 +254,7 @@ export default function KanbanBoard({ category }: KanbanBoardProps) {
     if (!selectedTodo || !newComment.trim()) return
 
     try {
-      await axios.post(`http://localhost:8080/api/todos/${selectedTodo.id}/comments`, {
+      await axios.post(`http://localhost:5000/api/todos/${selectedTodo.id}/comments`, {
         userId: 1,
         content: newComment
       })

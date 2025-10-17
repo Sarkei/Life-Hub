@@ -86,7 +86,7 @@ export default function NutritionPage() {
 
   const loadGoal = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/nutrition/goal?userId=${userId}`);
+      const response = await axios.get(`http://localhost:5000/api/nutrition/goal?userId=${userId}`);
       setGoal(response.data);
     } catch (error: any) {
       if (error.response?.status !== 404) {
@@ -98,7 +98,7 @@ export default function NutritionPage() {
   const loadTodayNutrition = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:8080/api/nutrition/daily/today?userId=${userId}`);
+      const response = await axios.get(`http://localhost:5000/api/nutrition/daily/today?userId=${userId}`);
       setTodayNutrition(response.data);
     } catch (error) {
       console.error('Error loading today nutrition:', error);
@@ -109,7 +109,7 @@ export default function NutritionPage() {
 
   const loadStats = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/nutrition/stats?userId=${userId}`);
+      const response = await axios.get(`http://localhost:5000/api/nutrition/stats?userId=${userId}`);
       setStats(response.data);
     } catch (error) {
       console.error('Error loading stats:', error);
@@ -118,7 +118,7 @@ export default function NutritionPage() {
 
   const loadRecentEntries = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/nutrition/daily/recent?userId=${userId}&days=7`);
+      const response = await axios.get(`http://localhost:5000/api/nutrition/daily/recent?userId=${userId}&days=7`);
       setRecentEntries(response.data);
     } catch (error) {
       console.error('Error loading recent entries:', error);
@@ -131,7 +131,7 @@ export default function NutritionPage() {
     setSuccess('');
 
     try {
-      await axios.post('http://localhost:8080/api/nutrition/goal', {
+      await axios.post('http://localhost:5000/api/nutrition/goal', {
         userId,
         currentWeight: parseFloat(goalForm.currentWeight),
         height: parseInt(goalForm.height),
@@ -157,7 +157,7 @@ export default function NutritionPage() {
     setSuccess('');
 
     try {
-      await axios.post('http://localhost:8080/api/nutrition/daily', {
+      await axios.post('http://localhost:5000/api/nutrition/daily', {
         userId,
         date: new Date().toISOString().split('T')[0],
         calories: parseInt(nutritionForm.calories),

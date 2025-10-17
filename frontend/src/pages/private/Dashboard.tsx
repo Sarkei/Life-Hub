@@ -40,32 +40,30 @@ export default function PrivateDashboard() {
 
   const loadDashboardData = async () => {
     try {
-      // Load upcoming events (next 7 days)
-      const eventsResponse = await axios.get('http://localhost:8080/api/calendar/events/upcoming', {
-        params: { userId: 1, days: 7 }
-      })
-      setUpcomingEvents(eventsResponse.data.slice(0, 5))
+      // Load dashboard data from new unified endpoint
+      const dashboardResponse = await axios.get('http://localhost:5000/api/dashboard/1')
+      const data = dashboardResponse.data
 
-      // Load recent todos
-      // TODO: Add API endpoint for todos
-      const mockTodos = [
-        { id: 1, title: 'Einkaufen gehen', completed: false, priority: 'high', dueDate: '2025-10-18' },
-        { id: 2, title: 'Email beantworten', completed: false, priority: 'medium', dueDate: '2025-10-17' },
-        { id: 3, title: 'Steuererklärung vorbereiten', completed: false, priority: 'high', dueDate: '2025-10-20' }
-      ]
-      setRecentTodos(mockTodos)
+      // Set upcoming events (max 5 for display)
+      setUpcomingEvents(data.upcomingEvents.slice(0, 5))
+
+      // Set open todos (max 5 for display)
+      setRecentTodos(data.openTodos.slice(0, 5))
 
       // Calculate stats
       setStats({
-        totalTodos: mockTodos.length,
-        activeTodos: mockTodos.filter(t => !t.completed).length,
-        completedTodos: mockTodos.filter(t => t.completed).length,
-        upcomingEvents: eventsResponse.data.length,
-        weekWorkouts: 0,
-        weekCalories: 0
+        totalTodos: data.openTodosCount + (data.completedTodosCount || 0),
+        activeTodos: data.openTodosCount,
+        completedTodos: data.completedTodosCount || 0,
+        upcomingEvents: data.upcomingEventsCount,
+        weekWorkouts: 0, // TODO: Add from fitness API
+        weekCalories: 0  // TODO: Add from nutrition API
       })
     } catch (error) {
       console.error('Error loading dashboard data:', error)
+      // Fallback to empty data on error
+      setUpcomingEvents([])
+      setRecentTodos([])
     }
   }
 

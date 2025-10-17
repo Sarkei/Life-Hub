@@ -37,6 +37,7 @@ public class SidebarConfigResponse {
     private Boolean projects;
 
     // School Items
+    private Boolean school;
     private Boolean grades;
     private Boolean habits;
     private Boolean budget;

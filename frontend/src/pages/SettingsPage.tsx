@@ -83,7 +83,7 @@ export default function SettingsPage() {
 
   const loadUserSettings = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/users/${userId}`)
+      const response = await axios.get(`http://localhost:5000/api/users/${userId}`)
       const userData = response.data
       
       setSettings(prev => ({
@@ -141,7 +141,7 @@ export default function SettingsPage() {
         phoneNumber: fullPhoneNumber
       };
 
-      await axios.put(`http://localhost:8080/api/users/${userId}`, updates);
+      await axios.put(`http://localhost:5000/api/users/${userId}`, updates);
       alert('Einstellungen erfolgreich gespeichert!');
       
       // Aktualisiere authStore mit neuem Username

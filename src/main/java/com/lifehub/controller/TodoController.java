@@ -1,78 +1,149 @@
 package com.lifehub.controller;
 
 import com.lifehub.model.Todo;
-import com.lifehub.model.enums.AreaType;
-import com.lifehub.model.enums.TodoStatus;
-import com.lifehub.repository.ProfileRepository;
 import com.lifehub.repository.TodoRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/todos")
-@RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class TodoController {
-
-    private final TodoRepository todoRepository;
-    private final ProfileRepository profileRepository;
-
-    @GetMapping
-    public ResponseEntity<List<Todo>> getTodos(
-            @RequestParam Long profileId,
-            @RequestParam(required = false) AreaType area,
-            @RequestParam(required = false) TodoStatus status
-    ) {
-        if (area != null && status != null) {
-            return ResponseEntity.ok(todoRepository.findByProfileIdAndAreaAndStatus(profileId, area, status));
-        } else if (area != null) {
-            return ResponseEntity.ok(todoRepository.findByProfileIdAndArea(profileId, area));
-        }
-        return ResponseEntity.ok(todoRepository.findByProfileId(profileId));
+    
+    @Autowired
+    private TodoRepository todoRepository;
+    
+    // Get all todos for user
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<Todo>> getAllTodos(@PathVariable Long userId) {
+        List<Todo> todos = todoRepository.findByUserId(userId);
+        return ResponseEntity.ok(todos);
     }
-
-    @PostMapping
-    public ResponseEntity<Todo> createTodo(@RequestBody Todo todoRequest) {
-        var profile = profileRepository.findById(todoRequest.getProfile().getId()).orElseThrow();
-        
-        Todo todo = Todo.builder()
-                .title(todoRequest.getTitle())
-                .description(todoRequest.getDescription())
-                .status(todoRequest.getStatus() != null ? todoRequest.getStatus() : TodoStatus.TODO)
-                .priority(todoRequest.getPriority())
-                .area(todoRequest.getArea())
-                .dueDate(todoRequest.getDueDate())
-                .profile(profile)
-                .position(todoRequest.getPosition())
-                .build();
-        
-        return ResponseEntity.ok(todoRepository.save(todo));
+    
+    // Get todos by category
+    @GetMapping("/{userId}/category/{category}")
+    public ResponseEntity<List<Todo>> getTodosByCategory(
+            @PathVariable Long userId,
+            @PathVariable String category) {
+        List<Todo> todos = todoRepository.findByUserIdAndCategory(userId, category);
+        return ResponseEntity.ok(todos);
     }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Todo> updateTodo(@PathVariable Long id, @RequestBody Todo todoRequest) {
-        var todo = todoRepository.findById(id).orElseThrow();
-        
-        todo.setTitle(todoRequest.getTitle());
-        todo.setDescription(todoRequest.getDescription());
-        todo.setStatus(todoRequest.getStatus());
-        todo.setPriority(todoRequest.getPriority());
-        todo.setDueDate(todoRequest.getDueDate());
-        todo.setPosition(todoRequest.getPosition());
-        
-        if (todoRequest.getStatus() == TodoStatus.COMPLETED && todo.getCompletedAt() == null) {
-            todo.setCompletedAt(LocalDateTime.now());
-        }
-        
-        return ResponseEntity.ok(todoRepository.save(todo));
+    
+    // Get todos by status
+    @GetMapping("/{userId}/status/{status}")
+    public ResponseEntity<List<Todo>> getTodosByStatus(
+            @PathVariable Long userId,
+            @PathVariable Todo.Status status) {
+        List<Todo> todos = todoRepository.findByUserIdAndStatus(userId, status);
+        return ResponseEntity.ok(todos);
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
-        todoRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    
+    // Get open todos
+    @GetMapping("/{userId}/open")
+    public ResponseEntity<List<Todo>> getOpenTodos(@PathVariable Long userId) {
+        List<Todo> todos = todoRepository.findOpenTodosByUserId(userId);
+        return ResponseEntity.ok(todos);
+    }
+    
+    // Get completed todos
+    @GetMapping("/{userId}/completed")
+    public ResponseEntity<List<Todo>> getCompletedTodos(@PathVariable Long userId) {
+        List<Todo> todos = todoRepository.findByUserIdAndCompleted(userId, true);
+        return ResponseEntity.ok(todos);
+    }
+    
+    // Get overdue todos
+    @GetMapping("/{userId}/overdue")
+    public ResponseEntity<List<Todo>> getOverdueTodos(@PathVariable Long userId) {
+        List<Todo> todos = todoRepository.findOverdueTodos(userId, LocalDate.now());
+        return ResponseEntity.ok(todos);
+    }
+    
+    // Get single todo
+    @GetMapping("/{userId}/item/{todoId}")
+    public ResponseEntity<Todo> getTodo(
+            @PathVariable Long userId,
+            @PathVariable Long todoId) {
+        return todoRepository.findById(todoId)
+                .filter(todo -> todo.getUserId().equals(userId))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
+    // Create new todo
+    @PostMapping("/{userId}")
+    public ResponseEntity<Todo> createTodo(
+            @PathVariable Long userId,
+            @RequestBody Todo todo) {
+        todo.setId(null);
+        todo.setUserId(userId);
+        Todo saved = todoRepository.save(todo);
+        return ResponseEntity.ok(saved);
+    }
+    
+    // Update todo
+    @PutMapping("/{userId}/{todoId}")
+    public ResponseEntity<Todo> updateTodo(
+            @PathVariable Long userId,
+            @PathVariable Long todoId,
+            @RequestBody Todo todo) {
+        return todoRepository.findById(todoId)
+                .filter(existing -> existing.getUserId().equals(userId))
+                .map(existing -> {
+                    todo.setId(todoId);
+                    todo.setUserId(userId);
+                    todo.setCreatedAt(existing.getCreatedAt());
+                    return ResponseEntity.ok(todoRepository.save(todo));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
+    // Mark as completed
+    @PostMapping("/{userId}/{todoId}/complete")
+    public ResponseEntity<Todo> completeTodo(
+            @PathVariable Long userId,
+            @PathVariable Long todoId) {
+        return todoRepository.findById(todoId)
+                .filter(todo -> todo.getUserId().equals(userId))
+                .map(todo -> {
+                    todo.setCompleted(true);
+                    todo.setStatus(Todo.Status.DONE);
+                    return ResponseEntity.ok(todoRepository.save(todo));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
+    // Mark as incomplete
+    @PostMapping("/{userId}/{todoId}/uncomplete")
+    public ResponseEntity<Todo> uncompleteTodo(
+            @PathVariable Long userId,
+            @PathVariable Long todoId) {
+        return todoRepository.findById(todoId)
+                .filter(todo -> todo.getUserId().equals(userId))
+                .map(todo -> {
+                    todo.setCompleted(false);
+                    todo.setCompletedAt(null);
+                    todo.setStatus(Todo.Status.TODO);
+                    return ResponseEntity.ok(todoRepository.save(todo));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
+    // Delete todo
+    @DeleteMapping("/{userId}/{todoId}")
+    public ResponseEntity<Void> deleteTodo(
+            @PathVariable Long userId,
+            @PathVariable Long todoId) {
+        return todoRepository.findById(todoId)
+                .filter(todo -> todo.getUserId().equals(userId))
+                .map(todo -> {
+                    todoRepository.delete(todo);
+                    return ResponseEntity.ok().<Void>build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }
