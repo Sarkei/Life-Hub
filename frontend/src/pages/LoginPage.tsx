@@ -33,16 +33,43 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      console.log('Attempting login with:', formData.username)
+      console.log('=== LOGIN START ===')
+      console.log('Username:', formData.username)
+      console.log('Password length:', formData.password.length)
+      
       const data = await loginMutation.mutateAsync(formData)
-      console.log('Login successful, received data:', data)
+      console.log('=== LOGIN SUCCESS ===')
+      console.log('Response:', data)
+      console.log('Token:', data.token)
+      console.log('UserId:', data.userId)
+      
       setAuth(data.token, data.userId, data.username, data.email)
-      console.log('Auth set, navigating to /')
-      navigate('/')
+      
+      // Prüfe sofort ob gespeichert
+      const currentState = useAuthStore.getState()
+      console.log('=== STORE STATE ===')
+      console.log('Token in store:', currentState.token)
+      console.log('UserId in store:', currentState.userId)
+      
+      // Prüfe LocalStorage
+      const storage = localStorage.getItem('auth-storage')
+      console.log('=== LOCAL STORAGE ===')
+      console.log('Storage content:', storage)
+      
+      if (currentState.token) {
+        console.log('=== NAVIGATION ===')
+        console.log('Token exists, navigating to /')
+        window.location.href = '/'
+      } else {
+        console.error('ERROR: Token not saved to store!')
+        alert('Login erfolgreich, aber Token wurde nicht gespeichert. Bitte Seite neu laden.')
+      }
     } catch (error: any) {
-      console.error('Login failed:', error)
-      console.error('Error response:', error.response?.data)
-      console.error('Error status:', error.response?.status)
+      console.error('=== LOGIN ERROR ===')
+      console.error('Error:', error)
+      console.error('Response data:', error.response?.data)
+      console.error('Status:', error.response?.status)
+      console.error('Full response:', error.response)
     }
   }
 
