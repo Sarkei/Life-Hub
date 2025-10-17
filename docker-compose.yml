@@ -17,6 +17,7 @@ services:
   postgres:
     image: postgres:latest
     container_name: lifehub-db
+    user: postgres
     environment:
       POSTGRES_DB: lifehub
       POSTGRES_USER: lifehub
