@@ -142,14 +142,31 @@ export default function CalendarPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validation
+    if (!formData.title || !formData.startTime || !formData.endTime) {
+      alert('Bitte fülle alle Pflichtfelder aus!')
+      return
+    }
+
     try {
+      // Ensure proper DateTime format for backend
+      const eventData = {
+        ...formData,
+        startTime: formData.startTime.includes('T') ? formData.startTime : `${formData.startTime}T00:00`,
+        endTime: formData.endTime.includes('T') ? formData.endTime : `${formData.endTime}T23:59`
+      }
+
       if (selectedEvent?.id) {
         // Update
-        await axios.put(`http://localhost:8080/api/calendar/events/${selectedEvent.id}`, formData)
+        await axios.put(`http://localhost:8080/api/calendar/events/${selectedEvent.id}`, eventData)
+        alert('Termin erfolgreich aktualisiert!')
       } else {
         // Create
-        await axios.post('http://localhost:8080/api/calendar/events', formData)
+        await axios.post('http://localhost:8080/api/calendar/events', eventData)
+        alert('Termin erfolgreich erstellt!')
       }
+      
       setShowModal(false)
       setSelectedEvent(null)
       setFormData({
@@ -164,8 +181,9 @@ export default function CalendarPage() {
         location: ''
       })
       loadEvents()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving event:', error)
+      alert(`Fehler beim Speichern: ${error.response?.data?.message || error.message || 'Unbekannter Fehler'}`)
     }
   }
 
