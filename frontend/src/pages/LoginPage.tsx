@@ -12,6 +12,7 @@ export default function LoginPage() {
     username: '',
     password: '',
   })
+  const [rememberMe, setRememberMe] = useState(true) // Standard: angemeldet bleiben
 
   // Prüfe auf OAuth2-Redirect mit Token
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function LoginPage() {
       console.log('=== LOGIN START ===')
       console.log('Username:', formData.username)
       console.log('Password length:', formData.password.length)
+      console.log('Remember me:', rememberMe)
       
       const data = await loginMutation.mutateAsync(formData)
       console.log('=== LOGIN SUCCESS ===')
@@ -43,22 +45,18 @@ export default function LoginPage() {
       console.log('Token:', data.token)
       console.log('UserId:', data.userId)
       
-      setAuth(data.token, data.userId, data.username, data.email)
+      setAuth(data.token, data.userId, data.username, data.email, rememberMe)
       
       // Prüfe sofort ob gespeichert
       const currentState = useAuthStore.getState()
       console.log('=== STORE STATE ===')
-      console.log('Token in store:', currentState.token)
-      console.log('UserId in store:', currentState.userId)
-      
-      // Prüfe LocalStorage
-      const storage = localStorage.getItem('auth-storage')
-      console.log('=== LOCAL STORAGE ===')
-      console.log('Storage content:', storage)
+      console.log('Token in store:', currentState.token ? 'EXISTS' : 'NULL')
+      console.log('RememberMe:', currentState.rememberMe)
       
       if (currentState.token) {
         console.log('=== NAVIGATION ===')
-        console.log('Token exists, navigating to /')
+        console.log('Redirecting to /')
+        // Harter Redirect für sicheren Seitenwechsel
         window.location.href = '/'
       } else {
         console.error('ERROR: Token not saved to store!')
@@ -141,6 +139,19 @@ export default function LoginPage() {
               }
               required
             />
+          </div>
+
+          <div className="flex items-center">
+            <input
+              id="rememberMe"
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+            <label htmlFor="rememberMe" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+              Angemeldet bleiben
+            </label>
           </div>
 
           {loginMutation.isError && (

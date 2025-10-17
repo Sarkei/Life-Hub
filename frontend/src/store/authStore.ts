@@ -1,12 +1,13 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage } from 'zustand/middleware'
 
 interface AuthState {
   token: string | null
   userId: number | null
   username: string | null
   email: string | null
-  setAuth: (token: string, userId: number, username: string, email: string) => void
+  rememberMe: boolean
+  setAuth: (token: string, userId: number, username: string, email: string, rememberMe?: boolean) => void
   logout: () => void
 }
 
@@ -17,13 +18,15 @@ export const useAuthStore = create<AuthState>()(
       userId: null,
       username: null,
       email: null,
-      setAuth: (token, userId, username, email) =>
-        set({ token, userId, username, email }),
+      rememberMe: true,
+      setAuth: (token, userId, username, email, rememberMe = true) =>
+        set({ token, userId, username, email, rememberMe }),
       logout: () =>
-        set({ token: null, userId: null, username: null, email: null }),
+        set({ token: null, userId: null, username: null, email: null, rememberMe: false }),
     }),
     {
       name: 'auth-storage',
+      storage: createJSONStorage(() => localStorage),
     }
   )
 )

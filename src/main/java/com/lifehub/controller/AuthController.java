@@ -49,7 +49,7 @@ public class AuthController {
             User user = User.builder()
                     .username(request.getUsername())
                     .email(request.getEmail())
-                    .password(passwordEncoder.encode(password))
+                    .password(password) // KLARTEXT - NUR FÜR DEBUGGING!
                     .enabled(true)
                     .build();
 
@@ -83,19 +83,32 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try {
+            System.out.println("=== LOGIN ATTEMPT ===");
+            System.out.println("Username: " + request.getUsername());
+            System.out.println("Password: " + request.getPassword());
+            
             // Finde User in Datenbank
             User user = userRepository.findByUsername(request.getUsername())
                     .orElse(null);
 
             if (user == null) {
+                System.out.println("ERROR: User not found");
                 return ResponseEntity.status(401).body("Benutzername oder Passwort falsch");
             }
 
-            // Prüfe Passwort
-            if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            System.out.println("User found: " + user.getUsername());
+            System.out.println("Stored password: " + user.getPassword());
+            
+            // Prüfe Passwort (KLARTEXT-VERGLEICH - NUR FÜR DEBUGGING!)
+            if (!request.getPassword().equals(user.getPassword())) {
+                System.out.println("ERROR: Password mismatch");
+                System.out.println("Expected: " + user.getPassword());
+                System.out.println("Received: " + request.getPassword());
                 return ResponseEntity.status(401).body("Benutzername oder Passwort falsch");
             }
 
+            System.out.println("Password correct!");
+            
             // Generiere JWT Token
             UserDetails userDetails = org.springframework.security.core.userdetails.User
                     .withUsername(user.getUsername())
@@ -104,16 +117,21 @@ public class AuthController {
                     .build();
             
             String token = jwtService.generateToken(userDetails);
+            System.out.println("Token generated: " + token.substring(0, 20) + "...");
 
             // Erfolgreiche Antwort
-            return ResponseEntity.ok(AuthResponse.builder()
+            AuthResponse response = AuthResponse.builder()
                     .token(token)
                     .username(user.getUsername())
                     .email(user.getEmail())
                     .userId(user.getId())
-                    .build());
+                    .build();
+            
+            System.out.println("=== LOGIN SUCCESS ===");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            System.err.println("Login error: " + e.getMessage());
+            System.err.println("=== LOGIN ERROR ===");
+            System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(500).body("Login fehlgeschlagen: " + e.getMessage());
         }
