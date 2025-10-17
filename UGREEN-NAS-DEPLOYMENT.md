@@ -347,6 +347,29 @@ http://nas-ip-adresse:5000
 
 ---
 
+
+## 🔁 Schritt 9b: Automatisches Git Pull per Cronjob
+
+Um sicherzustellen, dass dein NAS immer die neuesten Änderungen aus dem Git-Repository zieht, kannst du einen Cronjob einrichten, der alle 5 Minuten automatisch ein `git pull` im Projektverzeichnis ausführt.
+
+### Cronjob einrichten:
+
+```bash
+crontab -e
+```
+
+Füge folgende Zeile am Ende der Datei hinzu (Pfad ggf. anpassen!):
+
+```cron
+*/5 * * * * cd /home/dein-username/life-hub && git pull >> /home/dein-username/life-hub/git-cron.log 2>&1
+```
+
+**Hinweise:**
+- Ersetze `/home/dein-username/life-hub` durch deinen tatsächlichen Projektpfad, falls abweichend.
+- Der Output wird in `git-cron.log` gespeichert (optional).
+- Der Cronjob läuft unter dem aktuellen Benutzer. Stelle sicher, dass der Benutzer Schreibrechte im Verzeichnis hat und der SSH-Key für Git (falls privat) eingerichtet ist.
+
+---
 ## 🔄 Schritt 9: Automatischer Start beim NAS-Neustart
 
 Die Container starten automatisch neu durch `restart: unless-stopped` in der docker-compose.yml.

@@ -1,4 +1,16 @@
 services:
+  adminer:
+    image: adminer
+    container_name: lifehub-adminer
+    restart: unless-stopped
+    environment:
+      - ADMINER_DEFAULT_SERVER=postgres
+    ports:
+      - "5222:8080"
+    depends_on:
+      - postgres
+    networks:
+      - lifehub-network
   postgres:
     image: postgres:16-alpine
     container_name: lifehub-db
