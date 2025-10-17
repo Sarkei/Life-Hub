@@ -71,7 +71,40 @@ private SecretKey getSignInKey()
 
 ---
 
-### 2. Lombok @Builder Warnings ✅
+### 2. Frontend Dockerfile npm ci Fehler ✅
+**Problem:**
+```
+npm error The `npm ci` command can only install with an existing package-lock.json
+```
+
+**Ursache:**
+`npm ci` (Clean Install) benötigt eine `package-lock.json` Datei, die im Repository nicht vorhanden ist.
+
+**Lösung:**
+`frontend/Dockerfile` aktualisiert:
+
+```dockerfile
+# Alt:
+RUN npm ci
+
+# Neu:
+RUN npm install
+```
+
+**Warum npm install statt npm ci?**
+- `npm ci`: Schneller, aber benötigt `package-lock.json` (für CI/CD ideal)
+- `npm install`: Erstellt/aktualisiert `package-lock.json` automatisch
+
+**Optional - package-lock.json generieren:**
+```bash
+cd frontend
+npm install
+# Dann package-lock.json ins Repository committen
+```
+
+---
+
+### 3. Lombok @Builder Warnings ✅
 **Problem:**
 ```
 @Builder will ignore the initializing expression entirely.
@@ -207,6 +240,7 @@ Started LifeHubApplication in X.XXX seconds
 | Problem | Status | Dateien |
 |---------|--------|---------|
 | JWT API Fehler | ✅ Behoben | `JwtService.java` |
+| Frontend npm ci | ✅ Behoben | `frontend/Dockerfile` |
 | Widget @Builder | ✅ Behoben | `Widget.java` |
 | CalendarEvent @Builder | ✅ Behoben | `CalendarEvent.java` |
 | User @Builder | ✅ Behoben | `User.java` |
@@ -215,6 +249,11 @@ Started LifeHubApplication in X.XXX seconds
 | Exercise @Builder | ✅ Behoben | `Exercise.java` |
 
 **Ergebnis:** 0 Errors, 0 Warnings ✨
+
+**Build-Zeit:**
+- Backend: ~20-30 Sekunden (Maven)
+- Frontend: ~60-90 Sekunden (npm install + Vite build)
+- PostgreSQL: ~5 Sekunden (Image pull)
 
 ---
 

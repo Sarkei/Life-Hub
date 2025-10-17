@@ -1,4 +1,4 @@
-# ⚙️ Port-Änderung Zusammenfassung
+# ⚙️ Port-Änderung & Build-Fixes Zusammenfassung
 
 ## 🔄 Backend-Port von 8080 auf 5000 geändert
 
@@ -176,7 +176,34 @@ taskkill /PID <PID> /F
 
 ---
 
-## 📝 Wichtige Hinweise:
+## � Zusätzliche Build-Fixes:
+
+### Frontend Dockerfile
+**Problem:** `npm ci` benötigt eine `package-lock.json`, die nicht vorhanden war.
+
+**Lösung:** `npm ci` durch `npm install` ersetzt in `frontend/Dockerfile`.
+
+```dockerfile
+# Vorher:
+RUN npm ci
+
+# Nachher:
+RUN npm install
+```
+
+### Backend JWT Service
+**Problem:** JJWT 0.12.x API-Breaking-Changes.
+
+**Lösung:** `JwtService.java` für neue API aktualisiert (siehe [BUILD-FIXES.md](BUILD-FIXES.md)).
+
+### Lombok Warnings
+**Problem:** `@Builder` ignoriert Default-Werte ohne `@Builder.Default`.
+
+**Lösung:** `@Builder.Default` zu allen Entity-Feldern mit Initialwerten hinzugefügt.
+
+---
+
+## �📝 Wichtige Hinweise:
 
 1. **Neu bauen erforderlich**: Da die Port-Konfiguration in den Container eingebaut wird, müssen die Container neu gebaut werden mit `docker-compose build --no-cache`
 
