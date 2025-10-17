@@ -2,7 +2,6 @@ package com.lifehub.controller;
 
 import com.lifehub.model.MealLog;
 import com.lifehub.repository.MealLogRepository;
-import com.lifehub.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -17,61 +16,64 @@ import java.util.List;
 public class MealController {
 
     private final MealLogRepository mealLogRepository;
-    private final ProfileRepository profileRepository;
 
-    @GetMapping
+    @GetMapping("/{userId}")
     public ResponseEntity<List<MealLog>> getMeals(
-            @RequestParam Long profileId,
+            @PathVariable Long userId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end
     ) {
         if (date != null) {
-            return ResponseEntity.ok(mealLogRepository.findByProfileIdAndDate(profileId, date));
+            return ResponseEntity.ok(mealLogRepository.findByUserIdAndDate(userId, date));
         } else if (start != null && end != null) {
-            return ResponseEntity.ok(mealLogRepository.findByProfileIdAndDateBetween(profileId, start, end));
+            return ResponseEntity.ok(mealLogRepository.findByUserIdAndDateBetween(userId, start, end));
         }
-        return ResponseEntity.ok(mealLogRepository.findByProfileId(profileId));
+        return ResponseEntity.ok(mealLogRepository.findByUserId(userId));
     }
 
-    @PostMapping
-    public ResponseEntity<MealLog> createMeal(@RequestBody MealLog mealRequest) {
-        var profile = profileRepository.findById(mealRequest.getProfile().getId()).orElseThrow();
+    @PostMapping("/{userId}")
+    public ResponseEntity<MealLog> createMeal(
+            @PathVariable Long userId,
+            @RequestBody MealLog mealRequest) {
         
-        MealLog meal = MealLog.builder()
-                .profile(profile)
-                .mealName(mealRequest.getMealName())
-                .description(mealRequest.getDescription())
-                .date(mealRequest.getDate())
-                .mealType(mealRequest.getMealType())
-                .calories(mealRequest.getCalories())
-                .protein(mealRequest.getProtein())
-                .carbs(mealRequest.getCarbs())
-                .fats(mealRequest.getFats())
-                .build();
-        
-        return ResponseEntity.ok(mealLogRepository.save(meal));
+        mealRequest.setUserId(userId);
+        return ResponseEntity.ok(mealLogRepository.save(mealRequest));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<MealLog> updateMeal(@PathVariable Long id, @RequestBody MealLog mealRequest) {
-        var meal = mealLogRepository.findById(id).orElseThrow();
+    @PutMapping("/{userId}/{id}")
+    public ResponseEntity<MealLog> updateMeal(
+            @PathVariable Long userId,
+            @PathVariable Long id, 
+            @RequestBody MealLog mealRequest) {
         
-        meal.setMealName(mealRequest.getMealName());
-        meal.setDescription(mealRequest.getDescription());
-        meal.setDate(mealRequest.getDate());
-        meal.setMealType(mealRequest.getMealType());
-        meal.setCalories(mealRequest.getCalories());
-        meal.setProtein(mealRequest.getProtein());
-        meal.setCarbs(mealRequest.getCarbs());
-        meal.setFats(mealRequest.getFats());
-        
-        return ResponseEntity.ok(mealLogRepository.save(meal));
+        return mealLogRepository.findById(id)
+                .filter(meal -> meal.getUserId().equals(userId))
+                .map(meal -> {
+                    meal.setMealName(mealRequest.getMealName());
+                    meal.setDescription(mealRequest.getDescription());
+                    meal.setDate(mealRequest.getDate());
+                    meal.setMealType(mealRequest.getMealType());
+                    meal.setCalories(mealRequest.getCalories());
+                    meal.setProtein(mealRequest.getProtein());
+                    meal.setCarbs(mealRequest.getCarbs());
+                    meal.setFats(mealRequest.getFats());
+                    return ResponseEntity.ok(mealLogRepository.save(meal));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMeal(@PathVariable Long id) {
-        mealLogRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{userId}/{id}")
+    public ResponseEntity<Void> deleteMeal(
+            @PathVariable Long userId,
+            @PathVariable Long id) {
+        
+        return mealLogRepository.findById(id)
+                .filter(meal -> meal.getUserId().equals(userId))
+                .map(meal -> {
+                    mealLogRepository.delete(meal);
+                    return ResponseEntity.ok().<Void>build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

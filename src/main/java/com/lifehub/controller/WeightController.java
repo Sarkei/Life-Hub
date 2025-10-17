@@ -1,7 +1,6 @@
 package com.lifehub.controller;
 
 import com.lifehub.model.WeightLog;
-import com.lifehub.repository.ProfileRepository;
 import com.lifehub.repository.WeightLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,48 +16,56 @@ import java.util.List;
 public class WeightController {
 
     private final WeightLogRepository weightLogRepository;
-    private final ProfileRepository profileRepository;
 
-    @GetMapping
+    @GetMapping("/{userId}")
     public ResponseEntity<List<WeightLog>> getWeightLogs(
-            @RequestParam Long profileId,
+            @PathVariable Long userId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end
     ) {
         if (start != null && end != null) {
-            return ResponseEntity.ok(weightLogRepository.findByProfileIdAndDateBetween(profileId, start, end));
+            return ResponseEntity.ok(weightLogRepository.findByUserIdAndDateBetween(userId, start, end));
         }
-        return ResponseEntity.ok(weightLogRepository.findByProfileIdOrderByDateDesc(profileId));
+        return ResponseEntity.ok(weightLogRepository.findByUserIdOrderByDateDesc(userId));
     }
 
-    @PostMapping
-    public ResponseEntity<WeightLog> createWeightLog(@RequestBody WeightLog weightRequest) {
-        var profile = profileRepository.findById(weightRequest.getProfile().getId()).orElseThrow();
+    @PostMapping("/{userId}")
+    public ResponseEntity<WeightLog> createWeightLog(
+            @PathVariable Long userId,
+            @RequestBody WeightLog weightRequest) {
         
-        WeightLog weightLog = WeightLog.builder()
-                .profile(profile)
-                .weight(weightRequest.getWeight())
-                .date(weightRequest.getDate())
-                .notes(weightRequest.getNotes())
-                .build();
-        
-        return ResponseEntity.ok(weightLogRepository.save(weightLog));
+        weightRequest.setUserId(userId);
+        return ResponseEntity.ok(weightLogRepository.save(weightRequest));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<WeightLog> updateWeightLog(@PathVariable Long id, @RequestBody WeightLog weightRequest) {
-        var weightLog = weightLogRepository.findById(id).orElseThrow();
+    @PutMapping("/{userId}/{id}")
+    public ResponseEntity<WeightLog> updateWeightLog(
+            @PathVariable Long userId,
+            @PathVariable Long id,
+            @RequestBody WeightLog weightRequest) {
         
-        weightLog.setWeight(weightRequest.getWeight());
-        weightLog.setDate(weightRequest.getDate());
-        weightLog.setNotes(weightRequest.getNotes());
-        
-        return ResponseEntity.ok(weightLogRepository.save(weightLog));
+        return weightLogRepository.findById(id)
+                .filter(log -> log.getUserId().equals(userId))
+                .map(log -> {
+                    log.setWeight(weightRequest.getWeight());
+                    log.setDate(weightRequest.getDate());
+                    log.setNotes(weightRequest.getNotes());
+                    return ResponseEntity.ok(weightLogRepository.save(log));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWeightLog(@PathVariable Long id) {
-        weightLogRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{userId}/{id}")
+    public ResponseEntity<Void> deleteWeightLog(
+            @PathVariable Long userId,
+            @PathVariable Long id) {
+        
+        return weightLogRepository.findById(id)
+                .filter(log -> log.getUserId().equals(userId))
+                .map(log -> {
+                    weightLogRepository.delete(log);
+                    return ResponseEntity.ok().<Void>build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

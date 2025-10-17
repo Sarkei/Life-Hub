@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface WeightLogRepository extends JpaRepository<WeightLog, Long> {
-    List<WeightLog> findByProfileId(Long profileId);
-    List<WeightLog> findByProfileIdAndDateBetween(Long profileId, LocalDate start, LocalDate end);
-    List<WeightLog> findByProfileIdOrderByDateDesc(Long profileId);
+    List<WeightLog> findByUserId(Long userId);
+    List<WeightLog> findByUserIdAndDateBetween(Long userId, LocalDate start, LocalDate end);
+    List<WeightLog> findByUserIdOrderByDateDesc(Long userId);
 }

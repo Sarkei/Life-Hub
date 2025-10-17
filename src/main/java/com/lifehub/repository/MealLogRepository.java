@@ -9,7 +9,8 @@ import java.util.List;
 
 @Repository
 public interface MealLogRepository extends JpaRepository<MealLog, Long> {
-    List<MealLog> findByProfileId(Long profileId);
-    List<MealLog> findByProfileIdAndDate(Long profileId, LocalDate date);
-    List<MealLog> findByProfileIdAndDateBetween(Long profileId, LocalDate start, LocalDate end);
+    List<MealLog> findByUserId(Long userId);
+    List<MealLog> findByUserIdAndDate(Long userId, LocalDate date);
+    List<MealLog> findByUserIdAndDateBetween(Long userId, LocalDate start, LocalDate end);
+    List<MealLog> findByUserIdOrderByDateDesc(Long userId);
 }
