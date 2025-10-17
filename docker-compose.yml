@@ -12,8 +12,6 @@ services:
       - postgres
     networks:
       - lifehub-network
-    labels:
-      - "com.centurylinklabs.watchtower.enable=false"
   postgres:
     image: postgres:16-alpine
     container_name: lifehub-db
@@ -25,14 +23,11 @@ services:
       - "5555:5432"
     networks:
       - lifehub-network
-    labels:
-      - "com.centurylinklabs.watchtower.enable=false"
 
   backend:
     build: .
+    image: lifehub-backend:local
     container_name: lifehub-backend
-    labels:
-      - "com.centurylinklabs.watchtower.scope=lifehub"
     environment:
       DATABASE_URL: jdbc:postgresql://postgres:5432/lifehub
       DATABASE_USERNAME: lifehub
@@ -54,9 +49,8 @@ services:
 
   frontend:
     build: ./frontend
+    image: lifehub-frontend:local
     container_name: lifehub-frontend
-    labels:
-      - "com.centurylinklabs.watchtower.scope=lifehub"
     ports:
       - "80:80"
     depends_on:
@@ -64,22 +58,6 @@ services:
     networks:
       - lifehub-network
     restart: unless-stopped
-
-  watchtower:
-    image: containrrr/watchtower:latest
-    container_name: lifehub-watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 300 --cleanup --scope lifehub
-    environment:
-      - WATCHTOWER_SCOPE=lifehub
-    ports:
-      - "8091:8080"
-    restart: unless-stopped
-    networks:
-      - lifehub-network
-    labels:
-      - "com.centurylinklabs.watchtower.scope=lifehub"
 
 networks:
   lifehub-network:

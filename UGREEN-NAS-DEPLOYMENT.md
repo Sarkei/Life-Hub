@@ -358,16 +358,21 @@ Um sicherzustellen, dass dein NAS immer die neuesten Änderungen aus dem Git-Rep
 crontab -e
 ```
 
-Füge folgende Zeile am Ende der Datei hinzu (Pfad ggf. anpassen!):
+Füge folgende Zeilen am Ende der Datei hinzu (Pfad ggf. anpassen!):
 
 ```cron
-* * * * * cd /home/dein-username/life-hub && git pull >> /home/dein-username/life-hub/git-cron.log 2>&1
+# Git Pull jede Minute
+* * * * * cd /volume1/docker/Life-Hub && git pull >> /volume1/docker/Life-Hub-Data/git-pull.log 2>&1
+
+# Auto-Rebuild alle 5 Minuten (prüft auf Änderungen)
+*/5 * * * * /volume1/docker/Life-Hub/auto-rebuild.sh
 ```
 
 **Hinweise:**
-- Ersetze `/home/dein-username/life-hub` durch deinen tatsächlichen Projektpfad, falls abweichend.
-- Der Cronjob läuft **jede Minute** (`* * * * *`)
-- Der Output wird in `git-cron.log` gespeichert (optional).
+- Ersetze `/volume1/docker/Life-Hub` durch deinen tatsächlichen Projektpfad, falls abweichend.
+- **Git Pull:** Läuft **jede Minute** (`* * * * *`)
+- **Auto-Rebuild:** Läuft **alle 5 Minuten** (`*/5 * * * *`), rebuilt nur bei Änderungen
+- Der Output wird in Log-Dateien gespeichert
 - Der Cronjob läuft unter dem aktuellen Benutzer. Stelle sicher, dass der Benutzer Schreibrechte im Verzeichnis hat und der SSH-Key für Git (falls privat) eingerichtet ist.
 
 ### Teil 2: Watchtower für automatisches Rebuild
