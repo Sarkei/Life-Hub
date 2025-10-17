@@ -35,8 +35,14 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
+    @Column
+    private String password; // Nullable für OAuth2-Nutzer
+
+    @Column
+    private String provider; // local, google, etc.
+
+    @Column
+    private String providerId; // Google User ID
 
     @Builder.Default
     @Column(nullable = false)

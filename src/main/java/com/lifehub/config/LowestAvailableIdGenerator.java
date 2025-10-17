@@ -14,7 +14,7 @@ public class LowestAvailableIdGenerator implements IdentifierGenerator {
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        String tableName = session.getEntityPersister(object.getClass().getName(), object).getTableName();
+        String tableName = "users"; // Hardcoded für User-Tabelle
         
         try {
             Connection connection = session.getJdbcConnectionAccess().obtainConnection();
